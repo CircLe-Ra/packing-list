@@ -2,9 +2,9 @@
 @php
     $thead = Str::of($thead)->explode(',');
 @endphp
-<table class="min-w-full overflow-auto divide-y divide-neutral-200 dark:devide-neutral-800">
+<table class="min-w-full overflow-auto divide-y dark:devide-neutral-800">
     <thead>
-        <tr class="text-neutral-500 dark:text-neutral-50">
+        <tr class="">
             @foreach ($thead as $key => $th)
                 <th class="px-5 py-3 text-xs font-medium text-center uppercase" colspan="{{ $theadCol ?? '' }}">
                     {{ $th }}</th>
@@ -14,7 +14,7 @@
             @endif
         </tr>
     </thead>
-    <tbody class="divide-y divide-neutral-200 dark:divide-neutral-500">
+    <tbody class="divide-y ">
         {{ $slot }}
     </tbody>
 </table>

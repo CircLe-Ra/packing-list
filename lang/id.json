@@ -266,5 +266,11 @@
     "Container": "Kontainer",
     "Consumer Data": "Data Konsumen",
     "Driver Data": "Data Sopir",
-    "Container Data": "Data Kontainer"
+    "Container Data": "Data Kontainer",
+    "Consumer Input": "Input Konsumen",
+    "Driver Input": "Input Sopir",
+    "Container Input": "Input Kontainer",
+    "Phone Number": "Nomor Telepon",
+    "Address": "Alamat"
+
 }

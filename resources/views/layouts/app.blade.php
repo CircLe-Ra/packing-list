@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ $title }} - {{ config('app.name', 'Laravel') }}</title>
 
         <script>
             (function () {
@@ -33,7 +33,7 @@
             <livewire:layout.navigation />
 
             <!-- Page Content -->
-            <main class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <main class="container px-4 mx-auto sm:px-6 lg:px-8">
                 {{ $slot }}
             </main>
         </div>

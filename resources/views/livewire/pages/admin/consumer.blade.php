@@ -1,19 +1,16 @@
 <?php
 
-use Livewire\Volt\Component;
-use Livewire\Attributes\{Layout, Computed};
+use function Livewire\Volt\{state, layout, title, computed};
 use App\Models\Consumer;
 
-new #[Layout('layouts.app')]  class extends Component {
-    public $consumers;
+layout('layouts.app');
+title(__('Consumer'));
 
-    #[Computed]
-    public function consumers(){
-        return Consumer::latest()->get();
-    }
+$consumers = computed(function() {
+    return Consumer::latest()->get();
+});
 
-
-}; ?>
+?>
 
 <div>
     <x-breadcrumb :crumbs="[
@@ -27,23 +24,32 @@ new #[Layout('layouts.app')]  class extends Component {
                 ]
             ]"
     />
-    <div class="flex justift-between gap-4">
+    <div class="flex gap-4 justift-between">
         <x-card :classes="'w-1/2 bg-base-200'">
-            <h2 class="card-title">Card title!</h2>
-                <p>If a dog chews shoes whose shoes does he choose?</p>
-                <div class="card-actions justify-end">
-                    <button class="btn">Buy Now</button>
+            <h2 class="card-title">{{ __('Consumer Input') }}</h2>
+                <form action="">
+                    <x-text-input-1 name="Name" :title="__('Name')" reqired labelClass="my-5" />
+                    <x-text-input-1 name="Name" :title="__('Phone Number')" reqired labelClass="my-5" />
+                    <x-text-input-1 name="Name" :title="__('Address')" reqired labelClass="my-5" />
+                </form>
+                <div class="justify-end card-actions">
+                    <button class="btn btn-neutral">Batal</button>
+                    <button class="btn btn-active">Simpan</button>
                 </div>
         </x-card>
         <x-card :classes="'w-1/2 bg-base-200'">
             <h2 class="card-title">{{ __('Consumer Data') }}</h2>
             <x-table thead="No.,Nama,Alamat,No. Telepon" :action="true">
-                @foreach ($consumers as $consumer)
+                @if ($this->consumers)
+                    @foreach ($this->consumers as $consumer)
                     <tr>{{ $loop->iteration }}</tr>
                     <tr>{{ $consumer->name }}</tr>
                     <tr>{{ $consumer->phone }}</tr>
                     <tr>{{ $consumer->address }}</tr>
-                @endforeach
+                    @endforeach
+                @else
+                    <tr rowspan="5">Tidak ada data</tr>
+                @endif
             </x-table>
         </x-card>
     </div>
