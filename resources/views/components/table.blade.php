@@ -2,19 +2,20 @@
 @php
     $thead = Str::of($thead)->explode(',');
 @endphp
-<table class="min-w-full overflow-auto divide-y dark:devide-neutral-800">
+
+<table {{ $attributes->merge(['class' => 'table table-zebra']) }}>
     <thead>
-        <tr class="">
+        <tr>
             @foreach ($thead as $key => $th)
-                <th class="px-5 py-3 text-xs font-medium text-center uppercase" colspan="{{ $theadCol ?? '' }}">
-                    {{ $th }}</th>
+            <th colspan="{{ $theadCol ?? '' }}">
+                {{ __($th) }}</th>
             @endforeach
             @if ($action ?? false)
-                <th class="px-5 py-3 text-xs font-medium text-center uppercase">Aksi</th>
+                <th>{{ __('Action') }}</th>
             @endif
         </tr>
     </thead>
-    <tbody class="divide-y ">
+    <tbody>
         {{ $slot }}
     </tbody>
 </table>
