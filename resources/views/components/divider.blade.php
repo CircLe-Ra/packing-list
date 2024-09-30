@@ -3,7 +3,7 @@
     'pdivider' => 'center',
 
 ])
-<div class="flex flex-col w-full">
+<div {{ $attributes->merge(['class' => 'flex flex-col w-full']) }}>
     @if ($pdivider == 'center')
         <div class="divider">{{ __($name) }}</div>
     @elseif ($pdivider == 'start')

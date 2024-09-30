@@ -1,21 +1,31 @@
 <?php
 
-use function Livewire\Volt\{state, layout, title, mount, on};
+use function Livewire\Volt\{state, layout, title, computed, on, usesPagination, WithoutUrlPagination};
 use App\Models\Consumer;
 
 layout('layouts.app');
 title(__('Consumer'));
 
-state(['consumers' => [], 'name' => '', 'phone' => '', 'address' => '']);
+usesPagination();
+
+state(['name' => '', 'phone' => '', 'address' => '']);
 state(['idData'])->locked();
 state(['showing' => 5])->url();
 state(['search' => null])->url();
 
-mount(function() {
-    $this->consumers = Consumer::latest()->get();
+$consumers = computed(function(){
+    return Consumer::where('name', 'like', '%' . $this->search . '%')
+        ->orWhere('phone', 'like', '%' . $this->search . '%')
+        ->orWhere('address', 'like', '%' . $this->search . '%')
+        ->latest()->paginate($this->showing, pageName: 'comsumer-page');
 });
 
-on(['refresh' => fn() => $this->consumers = Consumer::latest()->get()]);
+
+on(['refresh' => fn() => $this->consumers = Consumer::where('name', 'like', '%' . $this->search . '%')
+        ->orWhere('phone', 'like', '%' . $this->search . '%')
+        ->orWhere('address', 'like', '%' . $this->search . '%')
+        ->latest()->paginate($this->showing, pageName: 'comsumer-page')
+    ]);
 
 $store = function() {
     $this->validate([
@@ -31,6 +41,7 @@ $store = function() {
                 'phone' => $this->phone,
                 'address' => $this->address,
             ]);
+            unset($this->consumers);
             $this->reset(['name', 'phone', 'address']);
             $this->dispatch('refresh');
             $this->dispatch('toast', message: __('Consumer has been updated'), data: ['position' => 'top-center', 'type' => 'success']);
@@ -40,6 +51,7 @@ $store = function() {
                 'phone' => $this->phone,
                 'address' => $this->address,
             ]);
+            unset($this->consumers);
             $this->reset(['name', 'phone', 'address']);
             $this->dispatch('refresh');
             $this->dispatch('toast', message: __('Consumer has been created'), data: ['position' => 'top-center', 'type' => 'success']);
@@ -62,6 +74,7 @@ $destroy = function($id) {
     try {
         $consumer = Consumer::find($id);
         $consumer->delete();
+        unset($this->consumers);
         $this->dispatch('refresh');
         $this->dispatch('toast', message: __('Consumer has been deleted'), data: ['position' => 'top-center', 'type' => 'success']);
     } catch (\Throwable $th) {
@@ -85,8 +98,9 @@ $destroy = function($id) {
             ]"
     />
     <div class="flex gap-4 justift-between">
-        <x-card :classes="'w-1/2 bg-base-200'">
-            <h2 class="card-title">{{ __('Consumer Input') }}</h2>
+        <div class="w-1/2">
+            <x-card :classes="'bg-base-200'">
+                <h2 class="card-title">{{ __('Consumer Input') }}</h2>
                 <form wire:submit="store" class="px-10">
                     <input type="hidden" wire:model="idData">
                     <x-text-input-2 name="name" wire:model="name" labelClass="my-3" :placeholder="__('Name')" />
@@ -97,21 +111,23 @@ $destroy = function($id) {
                         <x-button-active>{{ __('Simpan') }}</x-button-active>
                     </div>
                 </form>
-        </x-card>
+            </x-card>
+        </div>
         <x-card :classes="'w-1/2 bg-base-200'">
             <h2 class="card-title">{{ __('Consumer Data') }}</h2>
             <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
-                <x-form.filter wire:model.live="showing" />
+                <x-form.filter class="w-24 text-sm select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
+                <x-form.search wire:model.live="search" />
             </div>
-                <x-divider name="Data Tabel "/>
+                <x-divider name="Tabel Data" class="-mt-5"/>
             <x-table class="text-center " thead="No.,Name,Phone Number,Address" :action="true">
-                @if (count($consumers))
-                    @foreach ($consumers as $consumer)
+                @if ($this->consumers && $this->consumers->isNotEmpty())
+                    @foreach ($this->consumers as $consumer)
                         <tr >
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $consumer->name }}</td>
-                            <td>{{ $consumer->address }}</td>
                             <td>{{ $consumer->phone }}</td>
+                            <td>{{ $consumer->address }}</td>
                             <td>
                                 <x-button-info class="text-white btn-xs" wire:click="edit({{ $consumer->id }})">Edit</x-button-info>
                                 <x-button-error class="text-white btn-xs" wire:click="destroy({{ $consumer->id }})">
@@ -122,10 +138,11 @@ $destroy = function($id) {
                     @endforeach
                 @else
                 <tr>
-                    <td colspan="5" rowspan="{{ count($consumers) }}" class="text-center">{{ __('No Data') }}</td>
+                    <td colspan="5" class="text-center">{{ __('No Data') }}</td>
                 </tr>
                 @endif
             </x-table>
+            {{ $this->consumers->links('livewire.pagination') }}
         </x-card>
     </div>
 </div>
