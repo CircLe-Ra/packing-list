@@ -7,6 +7,10 @@
 
         <title>{{ $title }} - {{ config('app.name', 'Laravel') }}</title>
 
+        <style>
+            [x-cloak] { display: none !important; }
+        </style>
+
         <script>
             (function () {
             const currentTheme = localStorage.getItem('theme');

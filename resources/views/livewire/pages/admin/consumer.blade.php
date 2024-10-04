@@ -1,6 +1,6 @@
 <?php
 
-use function Livewire\Volt\{state, layout, title, computed, on, usesPagination, WithoutUrlPagination};
+use function Livewire\Volt\{state, layout, title, computed, on, usesPagination};
 use App\Models\Consumer;
 
 layout('layouts.app');
@@ -42,7 +42,7 @@ $store = function() {
                 'address' => $this->address,
             ]);
             unset($this->consumers);
-            $this->reset(['name', 'phone', 'address']);
+            $this->reset(['name', 'phone', 'address', 'idData']);
             $this->dispatch('refresh');
             $this->dispatch('toast', message: __('Consumer has been updated'), data: ['position' => 'top-center', 'type' => 'success']);
         }else {
@@ -52,7 +52,7 @@ $store = function() {
                 'address' => $this->address,
             ]);
             unset($this->consumers);
-            $this->reset(['name', 'phone', 'address']);
+            $this->reset(['name', 'phone', 'address', 'idData']);
             $this->dispatch('refresh');
             $this->dispatch('toast', message: __('Consumer has been created'), data: ['position' => 'top-center', 'type' => 'success']);
         }

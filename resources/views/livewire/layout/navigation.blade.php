@@ -113,6 +113,7 @@ new class extends Component
           <div class="dropdown">
             <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
               <svg
+                  x-cloak
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-5 h-5"
                 fill="none"
@@ -152,7 +153,7 @@ new class extends Component
               <li><a>Item 3</a></li>
             </ul>
           </div>
-          <a class="text-xl btn btn-ghost">daisyUI</a>
+          <a class="text-xl btn btn-ghost" x-cloak>Packing-List</a>
         </div>
         <div class="z-50 hidden navbar-center lg:flex">
           <ul class="px-1 menu menu-horizontal ">
@@ -180,7 +181,7 @@ new class extends Component
                 </ul>
               </details>
             </li>
-            <li><a>Item 3</a></li>
+            <li><a href="">Data Barang</a></li>
           </ul>
         </div>
             <div class="navbar-end">

@@ -16,6 +16,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('consumer', 'pages.admin.consumer')->name('master-data.consumer');
     Volt::route('driver', 'pages.admin.driver')->name('master-data.driver');
     Volt::route('container', 'pages.admin.container')->name('master-data.container');
+    Volt::route('items', 'pages.admin.items')->name('items');
 });
 
 require __DIR__.'/auth.php';
