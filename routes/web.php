@@ -16,7 +16,10 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('consumer', 'pages.admin.consumer')->name('master-data.consumer');
     Volt::route('driver', 'pages.admin.driver')->name('master-data.driver');
     Volt::route('container', 'pages.admin.container')->name('master-data.container');
+    Volt::route('item-type', 'pages.admin.item-type')->name('master-data.item-type');
+    Volt::route('consumers', 'pages.admin.consumers')->name('consumers');
     Volt::route('items', 'pages.admin.items')->name('items');
+    Volt::route('shipments', 'pages.admin.shipments')->name('shipments');
 });
 
 require __DIR__.'/auth.php';

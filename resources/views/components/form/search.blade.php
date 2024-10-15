@@ -1,5 +1,5 @@
 <div class="">
-    <x-text-input-3 {{ $attributes->whereStartsWith('wire:model.live') }} name="search" class="border-none focus:outline-none focus:ring-0" labelClass="input-sm" wire:model.live="search" pIcon="left" :placeholder="__('Search')">
+    <x-text-input-3 {{ $attributes->whereStartsWith('wire:model.live') }} {{ $attributes->merge(['class' => 'border-none focus:outline-none focus:ring-0']) }} name="search" labelClass="input-sm" wire:model.live="search" pIcon="left" :placeholder="__('Search')">
         <x-slot:icon>
             <svg
                 xmlns="http://www.w3.org/2000/svg"

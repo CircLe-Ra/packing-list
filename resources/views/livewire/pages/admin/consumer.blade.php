@@ -93,12 +93,12 @@ $destroy = function($id) {
                 ],
                 [
                     'text' => __('Consumer'),
-                    'href' => '/consumer',
+                    'href' => route('master-data.consumer'),
                 ]
             ]"
     />
     <div class="flex gap-4 justift-between">
-        <div class="w-1/2">
+        <div class="w-2/5">
             <x-card :classes="'bg-base-200'">
                 <h2 class="card-title">{{ __('Consumer Input') }}</h2>
                 <form wire:submit="store" class="px-10">
@@ -113,11 +113,11 @@ $destroy = function($id) {
                 </form>
             </x-card>
         </div>
-        <x-card :classes="'w-1/2 bg-base-200'">
+        <x-card :classes="'w-3/5 bg-base-200'">
             <h2 class="card-title">{{ __('Consumer Data') }}</h2>
             <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
                 <x-form.filter class="w-24 text-sm select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
-                <x-form.search wire:model.live="search" />
+                <x-form.search wire:model.live="search" class="w-32" />
             </div>
                 <x-divider name="Tabel Data" class="-mt-5"/>
             <x-table class="text-center " thead="No.,Name,Phone Number,Address" :action="true">

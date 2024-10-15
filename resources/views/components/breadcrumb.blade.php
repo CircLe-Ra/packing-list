@@ -12,7 +12,7 @@
     ]
 ]" /> --}}
 
-<div class="breadcrumbs text-sm my-4">
+<div {{ $attributes->merge(['class' => 'breadcrumbs text-sm my-4']) }}>
     <ul>
       @foreach($crumbs as $crumb)
             @if(isset($crumb['href']))

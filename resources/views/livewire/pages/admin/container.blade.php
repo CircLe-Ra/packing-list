@@ -8,46 +8,41 @@ title(__('Container'));
 
 usesPagination();
 
-state(['name' => '', 'number_reg' => '']);
+state(['number_container' => '']);
 state(['idData'])->locked();
 state(['showing' => 5])->url();
 state(['search' => null])->url();
 
 $containers = computed(function(){
-    return Container::where('name', 'like', '%' . $this->search . '%')
-        ->orWhere('number_reg', 'like', '%' . $this->search . '%')
+    return Container::where('number_container', 'like', '%' . $this->search . '%')
         ->latest()->paginate($this->showing, pageName: 'container-page');
 });
 
 
-on(['refresh' => fn() => $this->containers = Container::where('name', 'like', '%' . $this->search . '%')
-    ->orWhere('number_reg', 'like', '%' . $this->search . '%')
+on(['refresh' => fn() => $this->containers = Container::where('number_container', 'like', '%' . $this->search . '%')
     ->latest()->paginate($this->showing, pageName: 'container-page')
 ]);
 
 $store = function() {
     $this->validate([
-        'name' => 'required',
-        'number_reg' => 'required',
+        'number_container' => 'required',
     ]);
 
     try {
         if ($this->idData) {
             Container::find($this->idData)->update([
-                'name' => $this->name,
-                'number_reg' => $this->number_reg,
+                'number_container' => $this->number_container,
             ]);
             unset($this->containers);
-            $this->reset(['name', 'number_reg', 'idData']);
+            $this->reset(['number_container', 'idData']);
             $this->dispatch('refresh');
             $this->dispatch('toast', message: __('Container has been updated'), data: ['position' => 'top-center', 'type' => 'success']);
         }else {
             Container::create([
-                'name' => $this->name,
-                'number_reg' => $this->number_reg,
+                'number_container' => $this->number_container,
             ]);
             unset($this->containers);
-            $this->reset(['name', 'number_reg', 'idData']);
+            $this->reset(['number_container', 'idData']);
             $this->dispatch('refresh');
             $this->dispatch('toast', message: __('Container has been created'), data: ['position' => 'top-center', 'type' => 'success']);
         }
@@ -60,8 +55,7 @@ $store = function() {
 $edit = function($id) {
     $container = Container::find($id);
     $this->idData = $id;
-    $this->name = $container->name;
-    $this->number_reg = $container->number_reg;
+    $this->number_container = $container->number_container;
 };
 
 $destroy = function($id) {
@@ -86,18 +80,17 @@ $destroy = function($id) {
                 ],
                 [
                     'text' => __('Container'),
-                    'href' => '/container',
+                    'href' => route('master-data.container'),
                 ]
             ]"
     />
-    <div class="flex gap-4 justift-between">
-        <div class="w-1/2">
+    <div class="flex gap-4 justify-between">
+        <div class="w-2/5">
             <x-card :classes="'bg-base-200'">
                 <h2 class="card-title">{{ __('Container Input') }}</h2>
                 <form wire:submit="store" class="px-10">
                     <input type="hidden" wire:model="idData">
-                    <x-text-input-2 name="name" wire:model="name" labelClass="my-3" :placeholder="__('Name')" />
-                    <x-text-input-2 type="number" name="number_reg" wire:model="number_reg" labelClass="my-3" :placeholder="__('Number Registration')" />
+                    <x-text-input-2 type="text" name="number_container" wire:model="number_container" labelClass="my-3" :placeholder="__('Number Container')" />
                     <div class="justify-end card-actions">
                         <x-button-neutural type="reset">Batal</x-button-neutural>
                         <x-button-active>{{ __('Simpan') }}</x-button-active>
@@ -105,20 +98,19 @@ $destroy = function($id) {
                 </form>
             </x-card>
         </div>
-        <x-card :classes="'w-1/2 bg-base-200'">
+        <x-card :classes="'w-3/5 bg-base-200'">
             <h2 class="card-title">{{ __('Container Data') }}</h2>
             <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
                 <x-form.filter class="w-24 text-sm select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
-                <x-form.search wire:model.live="search" />
+                <x-form.search wire:model.live="search" class="w-32" />
             </div>
             <x-divider name="Tabel Data" class="-mt-5"/>
-            <x-table class="text-center " thead="No.,Name,Number Registration" :action="true">
+            <x-table class="text-center " thead="No.,Number Container" :action="true">
                 @if ($this->containers && $this->containers->isNotEmpty())
                     @foreach ($this->containers as $container)
                         <tr >
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $container->name }}</td>
-                            <td>{{ $container->number_reg }}</td>
+                            <td>{{ $container->number_container }}</td>
                             <td>
                                 <x-button-info class="text-white btn-xs" wire:click="edit({{ $container->id }})">Edit</x-button-info>
                                 <x-button-error class="text-white btn-xs" wire:click="destroy({{ $container->id }})">
