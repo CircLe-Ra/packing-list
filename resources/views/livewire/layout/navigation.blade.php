@@ -145,12 +145,12 @@ new class extends Component
                     </svg>
                     Master Data</a>
                 <ul class="p-2">
-                  <li><a href="{{ route('master-data.consumer') }}" wire:navigate>Data Konsumen</a></li>
-                  <li><a href="{{ route('master-data.driver') }}"  wire:navigate>Data Sopir</a></li>
-                  <li><a href="{{ route('master-data.container') }}"  wire:navigate>Data Kontainer</a></li>
+                    <li><a href="{{ route('master-data.consumer') }}" wire:navigate>{{ __('Data Konsumen')}}</a></li>
+                    <li><a href="{{ route('master-data.driver') }}"  wire:navigate>{{ __('Data Sopir')}}</a></li>
+                    <li><a href="{{ route('master-data.container') }}"  wire:navigate>{{ __('Data Kontainer')}}</a></li>
                 </ul>
               </li>
-              <li><a>Item 3</a></li>
+                <li><a href="{{ route('orders') }}" wire:navigate>{{ __('Orders') }}</a></li>
             </ul>
           </div>
           <a class="text-xl btn btn-ghost" x-cloak>Packing-List</a>
@@ -175,13 +175,13 @@ new class extends Component
                     </svg> Master Data
                 </summary>
                 <ul class="w-40 p-2">
-                    <li><a href="{{ route('master-data.consumer') }}" wire:navigate>Data Konsumen</a></li>
-                  <li><a href="{{ route('master-data.driver') }}"  wire:navigate>Data Sopir</a></li>
-                  <li><a href="{{ route('master-data.container') }}"  wire:navigate>Data Kontainer</a></li>
+                      <li><a href="{{ route('master-data.consumer') }}" wire:navigate>{{ __('Data Konsumen')}}</a></li>
+                      <li><a href="{{ route('master-data.driver') }}"  wire:navigate>{{ __('Data Sopir')}}</a></li>
+                      <li><a href="{{ route('master-data.container') }}"  wire:navigate>{{ __('Data Kontainer')}}</a></li>
                 </ul>
               </details>
             </li>
-            <li><a href="">Data Barang</a></li>
+            <li><a href="{{ route('orders') }}" wire:navigate>{{ __('Orders') }}</a></li>
           </ul>
         </div>
             <div class="navbar-end">

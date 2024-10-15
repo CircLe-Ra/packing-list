@@ -301,5 +301,8 @@
     "Driver could not be deleted": "Sopir tidak dapat dihapus",
     "Container could not be deleted": "Kontainer tidak dapat dihapus",
     "All": "Semua",
-    "Vehicle Number": "Nomor Kendaraan"
+    "Vehicle Number": "Nomor Kendaraan",
+    "Orders" : "Pesanan",
+    "Order" : "Pesanan"
+
 }
