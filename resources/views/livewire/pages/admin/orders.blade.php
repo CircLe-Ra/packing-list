@@ -27,7 +27,9 @@ usesPagination();
                                 ->latest()->paginate($this->showing, pageName: 'order-page')
    ]);
 
-
+    $tutup = function () {
+        $this->dispatch('close-modal');
+    }
 
 ?>
 
@@ -42,7 +44,21 @@ usesPagination();
                     'href' => '/driver',
                 ]
             ]"
-        />
+        >
+        <button class="btn" onclick="modal.showModal()">Tambah</button>
+
+        </x-breadcrumb>
+
+        <x-form.modal class="w-11/12 max-w-5xl">
+            <form wire:submit="save">
+                <x-text-input-1 name="name" wire:model="name" labelClass="my-3" :title="__('Name')" />
+                <x-text-input-1 name="ship" wire:model="ship" labelClass="my-3" :title="__('Ship')" />
+                <x-text-input-1 type="date" name="date" wire:model="date" labelClass="my-3" :title="__('Date')" />
+                <div class="flex justify-end">
+                    <button class="btn btn-primary ">{{ __('Save') }}</button>
+                </div>
+            </form>
+        </x-form.modal>
 
         <h2 class="card-title">{{ __('Driver Data') }}</h2>
         <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">

@@ -303,6 +303,9 @@
     "All": "Semua",
     "Vehicle Number": "Nomor Kendaraan",
     "Orders" : "Pesanan",
-    "Order" : "Pesanan"
+    "Order" : "Pesanan",
+    "Date" : "Tanggal",
+    "Status" : "Status",
+    "Ship" : "Kapal"
 
 }

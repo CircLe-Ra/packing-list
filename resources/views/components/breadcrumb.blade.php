@@ -12,7 +12,7 @@
     ]
 ]" /> --}}
 
-<div class="breadcrumbs text-sm my-4">
+<div class="breadcrumbs text-sm my-4 flex justify-between">
     <ul>
       @foreach($crumbs as $crumb)
             @if(isset($crumb['href']))
@@ -22,4 +22,5 @@
             @endif
         @endforeach
     </ul>
+    {{ $slot }}
   </div>
