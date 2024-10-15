@@ -43,5 +43,6 @@
         </div>
 
         <livewire:toast />
+        @stack('scripts')
     </body>
 </html>

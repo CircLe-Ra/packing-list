@@ -19,6 +19,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('item-type', 'pages.admin.item-type')->name('master-data.item-type');
     Volt::route('consumers', 'pages.admin.consumers')->name('consumers');
     Volt::route('items', 'pages.admin.items')->name('items');
+    Volt::route('orders', 'pages.admin.orders')->name('orders');
     Volt::route('shipments', 'pages.admin.shipments')->name('shipments');
 });
 

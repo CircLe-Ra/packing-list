@@ -14,12 +14,14 @@
 
 <div {{ $attributes->merge(['class' => 'breadcrumbs text-sm my-4']) }}>
     <ul>
-      @foreach($crumbs as $crumb)
-            @if(isset($crumb['href']))
+        @foreach ($crumbs as $crumb)
+            @if (isset($crumb['href']))
                 <li><a href="{{ $crumb['href'] }}" wire:navigate>{{ $crumb['text'] }}</a></li>
             @else
                 <li>{{ $crumb['text'] }}</li>
             @endif
         @endforeach
     </ul>
-  </div>
+    {{ $slot }}
+</div>
+
