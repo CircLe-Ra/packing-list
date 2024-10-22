@@ -101,7 +101,7 @@ $destroy = function($id) {
         <x-card :classes="'w-3/5 bg-base-200'">
             <h2 class="card-title">{{ __('Container Data') }}</h2>
             <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
-                <x-form.filter class="w-24 text-sm select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
+                <x-form.filter class="w-24 text-xs select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
                 <x-form.search wire:model.live="search" class="w-32" />
             </div>
             <x-divider name="Tabel Data" class="-mt-5"/>
@@ -113,7 +113,7 @@ $destroy = function($id) {
                             <td>{{ $container->number_container }}</td>
                             <td>
                                 <x-button-info class="text-white btn-xs" wire:click="edit({{ $container->id }})">Edit</x-button-info>
-                                <x-button-error class="text-white btn-xs" wire:click="destroy({{ $container->id }})">
+                                <x-button-error class="text-white btn-xs" wire:click="destroy({{ $container->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?')}}">
                                     {{ __('Delete') }}
                                 </x-button-error>
                             </td>

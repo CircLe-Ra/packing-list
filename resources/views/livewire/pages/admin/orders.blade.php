@@ -62,7 +62,7 @@ usesPagination();
 
         <h2 class="card-title">{{ __('Driver Data') }}</h2>
         <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
-            <x-form.filter class="w-24 text-sm select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
+            <x-form.filter class="w-24 text-xs select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
             <x-form.search wire:model.live="search" />
         </div>
 

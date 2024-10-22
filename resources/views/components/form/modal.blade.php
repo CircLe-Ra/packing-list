@@ -1,27 +1,36 @@
-@props(['id' => 'modal'])
+@props(['id' => 'modal', 'title' => null])
 
-<dialog id="{{ $id }}" class="modal">
-    <div {{ $attributes->merge(['class' => 'modal-box']) }} >
-        <h3 class="text-lg font-bold -mb-6">Pemesanan</h3>
+<input type="checkbox" id="{{ $id }}" class="modal-toggle" />
+<div class="modal" role="dialog">
+    <div {{ $attributes->merge(['class' => 'modal-box']) }}>
+        <h3 class="text-lg font-bold">{{ $title ?? __('Modal Title') }}</h3>
         <div class="modal-action">
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-            </form>
+            <label for="{{ $id }}" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="$dispatch('close-modal-x')">x</label>
         </div>
         {{ $slot }}
     </div>
-</dialog>
+</div>
 
 {{--gunakan button untuk membuka modal--}}
-{{--<button class="btn" onclick="modal.showModal()">Tambah</button>--}}
-
+{{--<label for="idnya" class="btn btn-sm btn-base-200 my-4">Tambah</label>--}}
 
 @once
     @push('scripts')
-        <script>
-            window.addEventListener('close-modal', event => {
-                document.getElementById(@js($id)).close();
-            });
-        </script>
+        @script
+            <script>
+                $wire.on('close-modal', (event) => {
+                    document.getElementById(@js($id)).checked = false;
+                })
+
+                $wire.on('open-modal', (event) => {
+                    const checkbox = document.getElementById(event[0]);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                })
+
+
+            </script>
+        @endscript
     @endpush
 @endonce

@@ -147,7 +147,7 @@ new class extends Component {
                             </li>
                         </ul>
                     </li>
-                    <li><a href="{{ route('shipments') }}" wire:navigate>{{ __('Shipment') }}</a></li>
+                    <li><a href="{{ route('shipments') }}" wire:navigate>{{ __('Shipments') }}</a></li>
                     <li><a href="{{ route('orders') }}" wire:navigate>{{ __('Orders') }}</a></li>
                 </ul>
             </div>
@@ -186,7 +186,7 @@ new class extends Component {
                         </ul>
                     </details>
                 </li>
-                <li><a href="{{ route('shipments') }}" wire:navigate>{{ __('Shipment') }}</a></li>
+                <li><a href="{{ route('shipments') }}" wire:navigate>{{ __('Shipments') }}</a></li>
                 <li><a href="{{ route('orders') }}" wire:navigate>{{ __('Orders') }}</a></li>
             </ul>
         </div>

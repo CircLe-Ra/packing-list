@@ -1,27 +1,92 @@
 <?php
 
-use function Livewire\Volt\{state, layout, title, computed, on, usesPagination};
+use function Livewire\Volt\{state, layout, title, computed, on, usesPagination, mount};
 use App\Models\Shipment;
 
 layout('layouts.app');
 title(__('Shipments'));
 
 usesPagination();
-state(['idData' => '','shipwreck' => '', 'tatd_shipment' => '']);
+state(['idData' => '', 'loader_ship' => '', 'ta_shipment' => '', 'td_shipment' => '']);
 state(['showing' => 5])->url();
 state(['search' => null])->url();
 
-$shipments = computed(function(){
-    return Shipment::where('shipwreck', 'like', '%' . $this->search . '%')
-        ->orWhere('tatd_shipment', 'like', '%' . $this->search . '%')
+$shipments = computed(function () {
+    return Shipment::where('loader_ship', 'like', '%' . $this->search . '%')
+        ->orWhere('ta_shipment', 'like', '%' . $this->search . '%')
+        ->orWhere('td_shipment', 'like', '%' . $this->search . '%')
         ->latest()->paginate($this->showing, pageName: 'shipment-page');
 });
 
-on(['refresh' => fn() => $this->shipments = Shipment::where('shipwreck', 'like', '%' . $this->search . '%')
-    ->orWhere('tatd_shipment', 'like', '%' . $this->search . '%')
-    ->latest()->paginate($this->showing, pageName: 'shipment-page')
+on(['refresh' => fn() => $this->shipments = Shipment::where('loader_ship', 'like', '%' . $this->search . '%')
+    ->orWhere('ta_shipment', 'like', '%' . $this->search . '%')
+    ->orWhere('td_shipment', 'like', '%' . $this->search . '%')
+    ->latest()->paginate($this->showing, pageName: 'shipment-page'),
+    'close-modal-x' => fn() => $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData'),
 ]);
 
+
+
+$save = function () {
+    $this->validate([
+        'loader_ship' => 'required',
+        'ta_shipment' => 'required',
+        'td_shipment' => 'required',
+    ]);
+
+    try {
+        if ($this->idData) {
+            $shipment = Shipment::find($this->idData);
+            $shipment->loader_ship = $this->loader_ship;
+            $shipment->ta_shipment = $this->ta_shipment;
+            $shipment->td_shipment = $this->td_shipment;
+            $shipment->save();
+            $this->diunset($this->shipments);
+            $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData');
+            $this->dispatch('close-modal');
+            $this->dispatch('refresh');
+            $this->dispatch('toast', message: __('Shipment has been updated'), data: ['position' => 'top-center', 'type' => 'success']);
+        } else {
+            $shipment = new Shipment();
+            $shipment->loader_ship = $this->loader_ship;
+            $shipment->ta_shipment = $this->ta_shipment;
+            $shipment->td_shipment = $this->td_shipment;
+            $shipment->save();
+            unset($this->shipments);
+            $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData');
+            $this->dispatch('close-modal');
+            $this->dispatch('refresh');
+            $this->dispatch('toast', message: __('Shipment has been created'), data: ['position' => 'top-center', 'type' => 'success']);
+        }
+    } catch (\Throwable $th) {
+        $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData');
+        $this->dispatch('close-modal');
+        $this->dispatch('toast', message: __('Shipment could not be saved'), data: ['position' => 'top-center', 'type' => 'error']);
+    }
+
+};
+
+$destroy = function ($id) {
+    try {
+        $shipment = Shipment::find($id);
+        $shipment->delete();
+        unset($this->shipments);
+        $this->dispatch('refresh');
+        $this->dispatch('toast', message: __('Shipment has been deleted'), data: ['position' => 'top-center', 'type' => 'success']);
+    } catch (\Throwable $th) {
+        $this->dispatch('toast', message: __('Shipment could not be deleted'), data: ['position' => 'top-center', 'type' => 'error']);
+    }
+};
+
+$edit = function ($id) {
+    $shipment = Shipment::find($id);
+    $this->idData = $id;
+    $this->loader_ship = $shipment->loader_ship;
+    $this->ta_shipment = $shipment->ta_shipment;
+    $this->td_shipment = $shipment->td_shipment;
+
+    $this->dispatch('open-modal', 'modal_shipment');
+}
 
 ?>
 
@@ -40,47 +105,46 @@ on(['refresh' => fn() => $this->shipments = Shipment::where('shipwreck', 'like',
                       class="items-start"
         />
 
-    <button class="btn btn-sm btn-base-200 my-4" onclick="modal_shipment.showModal()">Tambah</button>
+        <label for="modal_shipment" class="btn btn-sm btn-base-200 my-4">Tambah</label>
     </div>
 
-    <dialog id="modal_shipment" class="modal">
-        <div class="modal-box">
-            <h3 class="text-lg font-bold">Hello!</h3>
-            <p class="py-4">Press ESC key or click the button below to close</p>
-            <div class="modal-action">
-                <form method="dialog">
-                    <!-- if there is a button in form, it will close the modal -->
-                    <button class="btn">Close</button>
-                </form>
+    <x-form.modal id="modal_shipment" class="-mt-2" :title="__('Shipments')">
+        <form wire:submit="save">
+            <x-text-input-4 name="loader_ship" wire:model="loader_ship" labelClass="my-3" :title="__('Loader Ship')" />
+            <x-text-input-4 type="date" name="ta_shipment" wire:model="ta_shipment" labelClass="my-3" :title="__('TA Ship')" />
+            <x-text-input-4 type="date" name="td_shipment" wire:model="td_shipment" labelClass="my-3" :title="__('TD Ship')" />
+            <div class="flex justify-end">
+                <button class="btn btn-primary ">{{ __('Save') }}</button>
             </div>
-        </div>
-    </dialog>
+        </form>
+    </x-form.modal>
+
 
     <x-card :classes="'w-full bg-base-200'">
         <h2 class="card-title">{{ __('Shipment Data') }}</h2>
         <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
-            <x-form.filter class="w-24 text-sm select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
+            <x-form.filter class="w-24 text-xs select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
             <x-form.search wire:model.live="search" class="w-32" />
         </div>
-        <x-divider name="Tabel Data" class="-mt-5"/>
-        <x-table class="text-center " thead="No.,Shipwreck,TA & TD,Created At" :action="true">
+        <x-divider name="Tabel Data" class="-mt-5" />
+        <x-table class="text-center " thead="No.,Loader Ship,TA Ship,TD Ship,Created At" :action="true">
             @if ($this->shipments && $this->shipments->isNotEmpty())
-                @foreach ($this->shipments as $shipment)
-                    <tr >
+                @foreach ($this->shipments as $key => $shipment)
+                    <tr @if ($key % 2 == 0) class="bg-base-300" @endif>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $shipment->shipwreck }}</td>
-                        <td>{{ $shipment->tatd_shipment }}</td>
+                        <td>{{ $shipment->loader_ship }}</td>
+                        <td>{{ $shipment->ta_shipment }}</td>
+                        <td>{{ $shipment->td_shipment }}</td>
+                        <td>{{ $shipment->created_at->diffForHumans() }}</td>
                         <td>
                             <x-button-info class="text-white btn-xs" wire:click="edit({{ $shipment->id }})">Edit</x-button-info>
-                            <x-button-error class="text-white btn-xs" wire:click="destroy({{ $shipment->id }})">
-                                {{ __('Delete') }}
-                            </x-button-error>
+                            <x-button-error class="text-white btn-xs" wire:click="destroy({{ $shipment->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?')}}">{{ __('Delete') }}</x-button-error>
                         </td>
                     </tr>
                 @endforeach
             @else
                 <tr>
-                    <td colspan="5" class="text-center">{{ __('No Data') }}</td>
+                    <td colspan="6" class="text-center">{{ __('No Data') }}</td>
                 </tr>
             @endif
         </x-table>
