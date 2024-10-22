@@ -46,7 +46,7 @@ $store = function() {
             $this->dispatch('refresh');
             $this->dispatch('toast', message: __('Container has been created'), data: ['position' => 'top-center', 'type' => 'success']);
         }
-    } catch (\Throwable $th) {
+    } catch (Throwable $th) {
         $this->dispatch('toast', message: __('Container could not be created'), data: ['position' => 'top-center', 'type' => 'error']);
     }
 
@@ -65,7 +65,7 @@ $destroy = function($id) {
         unset($this->containers);
         $this->dispatch('refresh');
         $this->dispatch('toast', message: __('Container has been deleted'), data: ['position' => 'top-center', 'type' => 'success']);
-    } catch (\Throwable $th) {
+    } catch (Throwable $th) {
         $this->dispatch('toast', message: __('Container could not be deleted'), data: ['position' => 'top-center', 'type' => 'error']);
     }
 }
@@ -92,8 +92,8 @@ $destroy = function($id) {
                     <input type="hidden" wire:model="idData">
                     <x-text-input-2 type="text" name="number_container" wire:model="number_container" labelClass="my-3" :placeholder="__('Number Container')" />
                     <div class="justify-end card-actions">
-                        <x-button-neutural type="reset">Batal</x-button-neutural>
-                        <x-button-active>{{ __('Simpan') }}</x-button-active>
+                        <x-button-neutural type="reset">{{ __('Cancel') }}</x-button-neutural>
+                        <x-button-active>{{ __('Save') }}</x-button-active>
                     </div>
                 </form>
             </x-card>
@@ -104,7 +104,7 @@ $destroy = function($id) {
                 <x-form.filter class="w-24 text-xs select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
                 <x-form.search wire:model.live="search" class="w-32" />
             </div>
-            <x-divider name="Tabel Data" class="-mt-5"/>
+            <x-divider name="Table Data" class="-mt-5"/>
             <x-table class="text-center " thead="No.,Number Container" :action="true">
                 @if ($this->containers && $this->containers->isNotEmpty())
                     @foreach ($this->containers as $container)

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
             $table->string('loader_ship',50);
-            $table->dateTime('ta_shipment');
-            $table->dateTime('td_shipment');
+            $table->date('ta_shipment');
+            $table->date('td_shipment');
             $table->timestamps();
         });
     }

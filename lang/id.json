@@ -333,5 +333,21 @@
     "Data Containers": "Data Kontainer",
     "Data Consumers": "Data Konsumen",
     "Item Types": "Jenis Barang",
-    "Orders": "Pemesanan"
+    "Orders": "Pemesanan",
+    "Item Type": "Jenis Barang",
+    "Item Type Data": "Data Jenis Barang",
+    "Item Type has been created": "Jenis Barang telah dibuat",
+    "Item Type has been updated": "Jenis Barang telah diperbarui",
+    "Item Type has been deleted": "Jenis Barang telah dihapus",
+    "Item Type has been restored": "Jenis Barang telah dikembalikan",
+    "Item Type Input": "Input Jenis Barang",
+    "Item type has been updated": "Jenis Barang telah diperbarui",
+    "Item type has been deleted": "Jenis Barang telah dihapus",
+    "Item type has been restored": "Jenis Barang telah dikembalikan",
+    "Item type could not be updated": "Jenis Barang tidak dapat diperbarui",
+    "Item type could not be deleted": "Jenis Barang tidak dapat dihapus",
+    "Item type could not be restored": "Jenis Barang tidak dapat dikembalikan",
+    "Item type could not be created": "Jenis Barang tidak dapat dibuat",
+    "Item type could not be saved": "Jenis Barang tidak dapat disimpan",
+    "Item type has been created": "Jenis Barang telah dibuat"
 }
