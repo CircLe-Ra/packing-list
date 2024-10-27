@@ -42,7 +42,8 @@
             </main>
         </div>
 
-        <livewire:toast />
+{{--        <livewire:toast />--}}
         @stack('scripts')
+        <x-toaster-hub />
     </body>
 </html>

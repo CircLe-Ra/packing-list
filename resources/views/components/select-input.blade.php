@@ -6,14 +6,21 @@
     'value' => 'id',
     'display_name' => 'name',
     'disabled' => false,
-    'witoutValidate' => false,
+    'withoutValidate' => false,
+    'labelClass' => null,
+    'title' => null,
 ])
 
 
-<label class="w-full max-w-xs form-control">
+<label class="w-full form-control {{ $labelClass }}">
+    @if($title)
+        <div class="label">
+            <span class="label-text">{{ __($title) }}</span>
+        </div>
+    @endif
     <select  {{ $attributes->whereStartsWith('wire:model') }} id="{{ $id ?? '' }}" name="{{ $name ?? '' }}" @if ($disabled) disabled @endif {{  $attributes->merge(['class' => 'select select-bordered']) }} autofocus>
       @if ($getData == 'server')
-        <option disabled selected>Pilih?</option>
+        <option selected>Pilih?</option>
         @if (count($data))
             @foreach ($data as $dt)
                 <option value="{{ $dt->$value }}">&nbsp;{{ $dt->$display_name }}</option>
@@ -25,10 +32,12 @@
         {{ $slot }}
     @endif
     </select>
-    @if (!$witoutValidate)
-        <div class="label">
-        <span class="label-text-alt">Alt label</span>
-        </div>
+    @if (!$withoutValidate)
+        @error($name)
+            <div class="label">
+                <span class="label-text-alt text-red-600">{{ $message }}</span>
+            </div>
+        @enderror
     @endif
   </label>
 

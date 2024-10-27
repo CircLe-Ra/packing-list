@@ -1,0 +1,183 @@
+<?php
+
+use function Livewire\Volt\{layout, title, state, computed, on, usesPagination};
+use App\Models\ShipmentDetail;
+use App\Models\Container;
+use App\Models\ShipmentItem;
+
+layout('layouts.app');
+title(__('Container'));
+
+state(['shipment_id' => fn($id) => $id])->locked();
+state(['showing' => 5, 'search' => null])->url();
+state(['container_id' => '']);
+state(['idData'])->locked();
+state(['item'=> '', 'quantity' => '']);
+
+usesPagination();
+$shipment_details = computed(function () {
+    return ShipmentDetail::where('shipment_id', $this->shipment_id)->paginate($this->showing, pageName: 'shipment-detail-page');
+});
+
+$containers = computed(function () {
+    return Container::whereNotIn('id',function ($query) {
+        $query->select('container_id')->from('shipment_details');
+    })->get();
+});
+
+on(
+    [
+        'refresh' => fn () => $this->shipment_details = ShipmentDetail::where('shipment_id', $this->shipment_id)->paginate($this->showing, pageName: 'shipment-detail-page'),
+        'close-modal-x' => fn () => $this->reset('item', 'quantity', 'idData', 'container_id'),
+        'set-id' => fn ($id) => $this->idData = $id,
+    ]
+);
+
+
+$save = function ($action) {
+    $this->validate([
+        'container_id' => 'required',
+    ]);
+        try {
+            ShipmentDetail::create([
+                'shipment_id' => $this->shipment_id,
+                'container_id' => $this->container_id
+            ]);
+            $this->reset(['container_id']);
+            if ($action == 'save') {
+                $this->dispatch('close-modal', 'modal_shipment_container');
+            }
+            $this->dispatch('refresh');
+            unset($this->shipment_details);
+            $this->dispatch('toast', message: __('Container has been added'), data: ['position' => 'top-center', 'type' => 'success']);
+        }catch (Exception $e) {
+            $this->reset(['container_id']);
+            $this->dispatch('close-modal', 'modal_shipment_container');
+            $this->dispatch('toast', message: __('Container could not be added'), data: ['position' => 'top-center', 'type' => 'error']);
+        }
+};
+
+$saveItem = function ($action) {
+    $this->validate([
+        'item' => 'required',
+        'quantity' => 'required',
+    ]);
+            ShipmentItem::create([
+                'shipment_detail_id' => $this->idData,
+                'item_name' => $this->item,
+                'quantity' => $this->quantity
+            ]);
+            if ($action == 'save') {
+                $this->reset(['item', 'quantity', 'idData']);
+                $this->dispatch('close-modal', 'modal_container_item');
+            }else{
+                $this->reset(['item', 'quantity']);
+            }
+            $this->dispatch('refresh');
+            unset($this->shipment_details);
+            $this->dispatch('toast', message: __('Item has been added'), data: ['position' => 'top-center', 'type' => 'success']);
+        try {
+        }catch (Exception $e) {
+            $this->reset(['item', 'quantity', 'idData']);
+            $this->dispatch('close-modal', 'modal_container_item');
+            $this->dispatch('toast', message: __('Item could not be added'), data: ['position' => 'top-center', 'type' => 'error']);
+        }
+};
+
+
+$destroy = function($id) {
+    try {
+        $shipment_detail = ShipmentDetail::find($id);
+        $shipment_detail->delete();
+        unset($this->shipment_details);
+        $this->dispatch('refresh');
+        $this->dispatch('toast', message: __('Container has been deleted'), data: ['position' => 'top-center', 'type' => 'success']);
+    } catch (Throwable $th) {
+        $this->dispatch('toast', message: __('Container could not be deleted'), data: ['position' => 'top-center', 'type' => 'error']);
+    }
+}
+
+?>
+
+
+<div>
+    <div class="flex justify-between">
+        <x-breadcrumb :crumbs="[
+                    [
+                        'text' => __('Dashboard'),
+                        'href' => '/dashboard',
+                    ],
+                    [
+                        'text' => __('Shipment'),
+                        'href' => route('shipments'),
+                    ],
+                    [
+                        'text' => __('Container')
+                    ]
+                ]" class="items-start"
+        />
+
+        <label for="modal_shipment_container" class="btn btn-sm btn-base-200 my-4">{{ __('Add') }}</label>
+    </div>
+
+    <x-form.modal id="modal_shipment_container" class="-mt-2" :title="__('Shipments')">
+        <x-select-input name="container_id" wire:model="container_id" labelClass="-mt-4 mb-6" :title="__('Container')" :data="$this->containers" getData="server" display_name="number_container"/>
+        <div class="flex justify-end space-x-3">
+            <x-button-info class="text-white" wire:click="save('save')">{{ __('Save') }}</x-button-info>
+            <x-button-success class="text-white"  wire:click="save('save_add')">{{ __('Save & Add More') }}</x-button-success>
+        </div>
+    </x-form.modal>
+
+    <x-form.modal id="modal_container_item" class="-mt-2" :title="__('Item Data')">
+        <x-text-input-4 name="item" wire:model="item" labelClass="-mt-4 mb-3" title="{{ __('Item') }}" />
+        <x-text-input-4 type="number" name="quantity" wire:model="quantity" labelClass="my-3" title="{{ __('Quantity') }}" />
+        <div class="flex justify-end space-x-3">
+            <x-button-info class="text-white" wire:click="saveItem('save')">{{ __('Save') }}</x-button-info>
+            <x-button-success class="text-white"  wire:click="saveItem('save_add')">{{ __('Save & Add More') }}</x-button-success>
+        </div>
+    </x-form.modal>
+
+    <div>
+        <h2 class="card-title">{{ __('Data Containers') }}</h2>
+        <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
+            <x-form.filter class="w-24 text-xs select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']"  />
+            <x-form.search wire:model.live="search" class="w-32" />
+        </div>
+
+            @if($this->shipment_details && $this->shipment_details->isNotEmpty())
+                <div class="space-y-4">
+                    @foreach($this->shipment_details as $key => $shipment_detail)
+                        <x-card class="overflow-x-auto border">
+                            <div class="flex justify-between">
+                                <div class="w-[10%]">
+                                    <h3 class="text-lg font-bold">{{ __('Container') }} {{ $loop->iteration }}</h3>
+                                </div>
+                                <div class="w-[30%] text-center">
+                                    <h3 class="text-lg font-bold">{{ $shipment_detail->container->number_container }}</h3>
+                                </div>
+                                <div class="w-1/5">
+                                    <h3 class="text-lg font-bold">{{ __('Item') }} : 10</h3>
+                                </div>
+                                <div class="w-1/5">
+                                    <h3 class="text-lg font-bold">{{ __('Quantity') }} : 10</h3>
+                                </div>
+                                <div class="w-1/5 space-x-2">
+                                    <label for="modal_container_item" class="btn btn-sm btn-base-200" @click="$dispatch('set-id', { id: {{ $shipment_detail->id }} })">{{  __('Add Item')}}</label>
+                                    <x-button-error class="btn btn-sm text-white" wire:click="destroy({{ $shipment_detail->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?')}}">{{ __('Delete') }}</x-button-error>
+                                </div>
+                            </div>
+                        </x-card>
+                    @endforeach
+
+                </div>
+                <div class="my-8">
+                {{ $this->shipment_details->links('livewire.pagination') }}
+                </div>
+            @else
+                <div class="m-auto text-center">
+                    {{ __('No Data') }}
+                </div>
+            @endif
+    </div>
+
+</div>

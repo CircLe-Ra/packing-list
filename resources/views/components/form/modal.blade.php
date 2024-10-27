@@ -19,7 +19,14 @@
         @script
             <script>
                 $wire.on('close-modal', (event) => {
-                    document.getElementById(@js($id)).checked = false;
+                    if (event[0]) {
+                        const checkbox = document.getElementById(event[0]);
+                        if (checkbox) {
+                            checkbox.checked = false;
+                        }
+                    }else{
+                        document.getElementById(@js($id)).checked = false
+                    }
                 })
 
                 $wire.on('open-modal', (event) => {

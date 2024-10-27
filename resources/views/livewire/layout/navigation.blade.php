@@ -143,12 +143,30 @@ new class extends Component {
                             </li>
                             <li><a href="{{ route('master-data.container') }}"
                                     wire:navigate>{{ __('Data Containers') }}</a></li>
-                            <li><a href="{{ route('master-data.item-type') }}" wire:navigate>{{ __('Item Types') }}</a>
+                            <li><a href="{{ route('master-data.item-type') }}" wire:navigate>{{ __('Data Unit') }}</a>
                             </li>
                         </ul>
                     </li>
-                    <li><a href="{{ route('shipments') }}" wire:navigate>{{ __('Shipments') }}</a></li>
-                    <li><a href="{{ route('orders') }}" wire:navigate>{{ __('Orders') }}</a></li>
+                    <li>
+                        <x-nav-link :href="route('shipments')" :active="request()->routeIs('shipments*')" wire:navigate>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                <rect width="24" height="24" fill="none" />
+                                <path fill="currentColor"
+                                      d="M19 5v2h-4V5zM9 5v6H5V5zm10 8v6h-4v-6zM9 17v2H5v-2zM21 3h-8v6h8zM11 3H3v10h8zm10 8h-8v10h8zm-10 4H3v6h8z" />
+                            </svg>
+                            {{ __('Shipments') }}
+                        </x-nav-link>
+                    </li>
+                    <li>
+                        <x-nav-link :href="route('orders')" :active="request()->routeIs('orders')" wire:navigate>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                <rect width="24" height="24" fill="none" />
+                                <path fill="currentColor"
+                                      d="M19 5v2h-4V5zM9 5v6H5V5zm10 8v6h-4v-6zM9 17v2H5v-2zM21 3h-8v6h8zM11 3H3v10h8zm10 8h-8v10h8zm-10 4H3v6h8z" />
+                            </svg>
+                            {{ __('Orders') }}
+                        </x-nav-link>
+                    </li>
                 </ul>
             </div>
             <a class="text-xl btn btn-ghost" x-cloak>Packing-List</a>
@@ -182,12 +200,30 @@ new class extends Component {
                             <li><a href="{{ route('master-data.container') }}"
                                     wire:navigate>{{ __('Data Containers') }}</a></li>
                             <li><a href="{{ route('master-data.item-type') }}"
-                                    wire:navigate>{{ __('Item Types') }}</a></li>
+                                    wire:navigate>{{ __('Data Unit') }}</a></li>
                         </ul>
                     </details>
                 </li>
-                <li><a href="{{ route('shipments') }}" wire:navigate>{{ __('Shipments') }}</a></li>
-                <li><a href="{{ route('orders') }}" wire:navigate>{{ __('Orders') }}</a></li>
+                <li>
+                    <x-nav-link :href="route('shipments')" :active="request()->routeIs('shipments*')" wire:navigate>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                            <rect width="24" height="24" fill="none" />
+                            <path fill="currentColor"
+                                  d="M19 5v2h-4V5zM9 5v6H5V5zm10 8v6h-4v-6zM9 17v2H5v-2zM21 3h-8v6h8zM11 3H3v10h8zm10 8h-8v10h8zm-10 4H3v6h8z" />
+                        </svg>
+                        {{ __('Shipments') }}
+                    </x-nav-link>
+                </li>
+                <li>
+                    <x-nav-link :href="route('orders')" :active="request()->routeIs('orders')" wire:navigate>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                            <rect width="24" height="24" fill="none" />
+                            <path fill="currentColor"
+                                  d="M19 5v2h-4V5zM9 5v6H5V5zm10 8v6h-4v-6zM9 17v2H5v-2zM21 3h-8v6h8zM11 3H3v10h8zm10 8h-8v10h8zm-10 4H3v6h8z" />
+                        </svg>
+                        {{ __('Orders') }}
+                    </x-nav-link>
+                </li>
             </ul>
         </div>
         <div class="navbar-end">

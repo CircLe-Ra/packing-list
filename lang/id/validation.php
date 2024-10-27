@@ -271,5 +271,11 @@ return [
         'username'                 => 'nama pengguna',
         'value'                    => 'nilai',
         'year'                     => 'tahun',
+        'container_id'             => 'Kontainer',
+        'number_container'         => 'Nomor Kontainer',
+        'item_type_id'             => 'Jenis Barang',
+        'item_type'                => 'Jenis Barang',
+        'item_id'                  => 'Barang',
+        'item'                     => 'Barang',
     ],
 ];

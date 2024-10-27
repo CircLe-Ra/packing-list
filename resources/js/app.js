@@ -1,4 +1,5 @@
 import './bootstrap';
+import '../../vendor/masmerise/livewire-toaster/resources/js';
 
 function toggleTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';

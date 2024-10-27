@@ -21,6 +21,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('items', 'pages.admin.items')->name('items');
     Volt::route('orders', 'pages.admin.orders')->name('orders');
     Volt::route('shipments', 'pages.admin.shipments')->name('shipments');
+    Volt::route('shipments/data-container/{id}', 'pages.admin.shipments.container')->name('shipments.data-container');
 });
 
 require __DIR__.'/auth.php';

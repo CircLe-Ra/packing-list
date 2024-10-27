@@ -41,10 +41,10 @@ $save = function () {
             $shipment->ta_shipment = $this->ta_shipment;
             $shipment->td_shipment = $this->td_shipment;
             $shipment->save();
-            $this->diunset($this->shipments);
             $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData');
             $this->dispatch('close-modal');
             $this->dispatch('refresh');
+            unset($this->shipments);
             $this->dispatch('toast', message: __('Shipment has been updated'), data: ['position' => 'top-center', 'type' => 'success']);
         } else {
             $shipment = new Shipment();
@@ -58,10 +58,10 @@ $save = function () {
             $this->dispatch('refresh');
             $this->dispatch('toast', message: __('Shipment has been created'), data: ['position' => 'top-center', 'type' => 'success']);
         }
-    } catch (\Throwable $th) {
+    } catch (Throwable $th) {
         $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData');
         $this->dispatch('close-modal');
-        $this->dispatch('toast', message: __('Shipment could not be saved'), data: ['position' => 'top-center', 'type' => 'error']);
+        $this->dispatch('toast', message: __('Shipment could not be saved'), data: ['position' => 'top-center', 'type' => 'danger']);
     }
 
 };
@@ -73,8 +73,9 @@ $destroy = function ($id) {
         unset($this->shipments);
         $this->dispatch('refresh');
         $this->dispatch('toast', message: __('Shipment has been deleted'), data: ['position' => 'top-center', 'type' => 'success']);
-    } catch (\Throwable $th) {
-        $this->dispatch('toast', message: __('Shipment could not be deleted'), data: ['position' => 'top-center', 'type' => 'error']);
+    } catch (Throwable $th) {
+        $this->dispatch('toast', message:$th->getMessage(), data: ['position' => 'top-center', 'type' => 'danger']);
+        $this->dispatch('toast', message: __('Shipment could not be deleted'), data: ['position' => 'top-center', 'type' => 'danger']);
     }
 };
 
@@ -120,7 +121,7 @@ $edit = function ($id) {
     </x-form.modal>
 
 
-    <x-card :classes="'w-full bg-base-200'">
+    <div>
         <h2 class="card-title">{{ __('Shipment Data') }}</h2>
         <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
             <x-form.filter class="w-24 text-xs select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
@@ -136,9 +137,13 @@ $edit = function ($id) {
                         <td>{{ $shipment->ta_shipment }}</td>
                         <td>{{ $shipment->td_shipment }}</td>
                         <td>{{ $shipment->created_at->diffForHumans() }}</td>
-                        <td>
+                        <td class="space-y-1 space-x-1">
+                            <x-button-link href="{{ route('shipments.data-container', $shipment->id) }}" class="text-white btn-xs btn-success" wire:navigate>{{ __('Data Containers') }}</x-button-link>
                             <x-button-info class="text-white btn-xs" wire:click="edit({{ $shipment->id }})">Edit</x-button-info>
-                            <x-button-error class="text-white btn-xs" wire:click="destroy({{ $shipment->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?')}}">{{ __('Delete') }}</x-button-error>
+                            <x-button-error class="{!! $shipment->shipment_details->count() > 0 ? 'btn-disabled text-white btn-xs' : 'text-white btn-xs' !!}"
+                                            wire:click="destroy({{ $shipment->id }})"
+                                            wire:confirm="{{ __('Are you sure you want to delete this data?')}}"
+                            >{{ __('Delete') }}</x-button-error>
                         </td>
                     </tr>
                 @endforeach
@@ -149,6 +154,6 @@ $edit = function ($id) {
             @endif
         </x-table>
         {{ $this->shipments->links('livewire.pagination') }}
-    </x-card>
+    </div>
 
 </div>
