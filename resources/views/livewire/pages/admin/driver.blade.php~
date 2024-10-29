@@ -10,7 +10,7 @@ title(__('Driver'));
 usesPagination();
 
 state(['name' => '', 'phone' => '', 'vehicle_number' => '']);
-state(['idData']);
+state(['idData'])->locked();
 state(['showing' => 5])->url();
 state(['search' => null])->url();
 

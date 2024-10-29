@@ -10,7 +10,7 @@ title(__('Consumer'));
 usesPagination();
 
 state(['name' => '', 'phone' => '', 'address' => '']);
-state(['idData']);
+state(['idData'])->locked();
 state(['showing' => 5])->url();
 state(['search' => null])->url();
 

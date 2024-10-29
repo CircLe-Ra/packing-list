@@ -9,7 +9,7 @@ use App\Models\Order;
 
 usesPagination();
 
-    state(['idData'])->locked();
+    state(['idData']);
     state(['order', 'ship']);
     state(['showing' => 5])->url();
     state(['search' => null])->url();

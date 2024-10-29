@@ -2,6 +2,7 @@
 
 use function Livewire\Volt\{state, layout, title, computed, on, usesPagination};
 use App\Models\Container;
+use Masmerise\Toaster\Toaster;
 
 layout('layouts.app');
 title(__('Container'));
@@ -9,7 +10,7 @@ title(__('Container'));
 usesPagination();
 
 state(['number_container' => '']);
-state(['idData'])->locked();
+state(['idData']);
 state(['showing' => 5])->url();
 state(['search' => null])->url();
 
@@ -36,7 +37,7 @@ $store = function() {
             unset($this->containers);
             $this->reset(['number_container', 'idData']);
             $this->dispatch('refresh');
-            $this->dispatch('toast', message: __('Container has been updated'), data: ['position' => 'top-center', 'type' => 'success']);
+            Toaster::success(__('Container has been updated'));
         }else {
             Container::create([
                 'number_container' => $this->number_container,
@@ -44,10 +45,10 @@ $store = function() {
             unset($this->containers);
             $this->reset(['number_container', 'idData']);
             $this->dispatch('refresh');
-            $this->dispatch('toast', message: __('Container has been created'), data: ['position' => 'top-center', 'type' => 'success']);
+            Toaster::success(__('Container has been created'));
         }
     } catch (Throwable $th) {
-        $this->dispatch('toast', message: __('Container could not be created'), data: ['position' => 'top-center', 'type' => 'error']);
+        Toaster::error( __('Container could not be created'));
     }
 
 };
@@ -64,9 +65,9 @@ $destroy = function($id) {
         $container->delete();
         unset($this->containers);
         $this->dispatch('refresh');
-        $this->dispatch('toast', message: __('Container has been deleted'), data: ['position' => 'top-center', 'type' => 'success']);
+        Toaster::success(__('Container has been deleted'));
     } catch (Throwable $th) {
-        $this->dispatch('toast', message: __('Container could not be deleted'), data: ['position' => 'top-center', 'type' => 'error']);
+        Toaster::error(__('Container could not be deleted'));
     }
 }
 

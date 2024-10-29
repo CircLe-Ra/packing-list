@@ -10,7 +10,7 @@ title(__('Units'));
 usesPagination();
 
 state(['name' => '']);
-state(['idData'])->locked();
+state(['idData']);
 state(['showing' => 5])->url();
 state(['search' => null])->url();
 
@@ -45,10 +45,10 @@ $store = function() {
             unset($this->itemTypes);
             $this->reset(['name', 'idData']);
             $this->dispatch('refresh');
-            $this->dispatch('toast', message: __('Item type has been created'), data: ['position' => 'top-center', 'type' => 'success']);
+            Toaster::success(__('Item type has been created'));
         }
     } catch (\Throwable $th) {
-        $this->dispatch('toast', message: __('Item type could not be created'), data: ['position' => 'top-center', 'type' => 'error']);
+        Toaster::error(__('Item type could not be created'));
     }
 };
 
@@ -64,9 +64,9 @@ $destroy = function($id) {
         $itemType->delete();
         unset($this->itemTypes);
         $this->dispatch('refresh');
-        $this->dispatch('toast', message: __('Item type has been deleted'), data: ['position' => 'top-center', 'type' => 'success']);
+        Toaster::success(__('Item type has been deleted'));
     } catch (\Throwable $th) {
-        $this->dispatch('toast', message: __('Item type could not be deleted'), data: ['position' => 'top-center', 'type' => 'error']);
+        Toaster::error(__('Item type could not be deleted'));
     }
 }
 

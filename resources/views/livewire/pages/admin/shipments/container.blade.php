@@ -4,6 +4,7 @@ use function Livewire\Volt\{layout, title, state, computed, on, usesPagination};
 use App\Models\ShipmentDetail;
 use App\Models\Container;
 use App\Models\ShipmentItem;
+use Masmerise\Toaster\Toaster;
 
 layout('layouts.app');
 title(__('Container'));
@@ -11,7 +12,7 @@ title(__('Container'));
 state(['shipment_id' => fn($id) => $id])->locked();
 state(['showing' => 5, 'search' => null])->url();
 state(['container_id' => '']);
-state(['idData'])->locked();
+state(['idData']);
 state(['item'=> '', 'quantity' => '']);
 
 usesPagination();
@@ -49,11 +50,11 @@ $save = function ($action) {
             }
             $this->dispatch('refresh');
             unset($this->shipment_details);
-            $this->dispatch('toast', message: __('Container has been added'), data: ['position' => 'top-center', 'type' => 'success']);
+            Toaster::success(__('Container has been added'));
         }catch (Exception $e) {
             $this->reset(['container_id']);
             $this->dispatch('close-modal', 'modal_shipment_container');
-            $this->dispatch('toast', message: __('Container could not be added'), data: ['position' => 'top-center', 'type' => 'error']);
+            Toaster::error(__('Container could not be added'));
         }
 };
 
@@ -67,6 +68,7 @@ $saveItem = function ($action) {
                 'item_name' => $this->item,
                 'quantity' => $this->quantity
             ]);
+        try {
             if ($action == 'save') {
                 $this->reset(['item', 'quantity', 'idData']);
                 $this->dispatch('close-modal', 'modal_container_item');
@@ -75,12 +77,11 @@ $saveItem = function ($action) {
             }
             $this->dispatch('refresh');
             unset($this->shipment_details);
-            $this->dispatch('toast', message: __('Item has been added'), data: ['position' => 'top-center', 'type' => 'success']);
-        try {
+            Toaster::success(__('Item has been added'));
         }catch (Exception $e) {
             $this->reset(['item', 'quantity', 'idData']);
             $this->dispatch('close-modal', 'modal_container_item');
-            $this->dispatch('toast', message: __('Item could not be added'), data: ['position' => 'top-center', 'type' => 'error']);
+            Toaster::error(__('Item could not be added'));
         }
 };
 
@@ -91,9 +92,9 @@ $destroy = function($id) {
         $shipment_detail->delete();
         unset($this->shipment_details);
         $this->dispatch('refresh');
-        $this->dispatch('toast', message: __('Container has been deleted'), data: ['position' => 'top-center', 'type' => 'success']);
+        Toaster::success(__('Container has been deleted'));
     } catch (Throwable $th) {
-        $this->dispatch('toast', message: __('Container could not be deleted'), data: ['position' => 'top-center', 'type' => 'error']);
+        Toaster::error(__('Container could not be deleted'));
     }
 }
 
