@@ -374,5 +374,7 @@
     "Item has been restored": "Barang telah dikembalikan",
     "Item could not be updated": "Barang tidak dapat diperbarui",
     "Data Unit" : "Data Satuan",
-    "Table Data" : "Data Tabel"
+    "Table Data" : "Data Tabel",
+    "Model Not Found" : "Model Tidak Ditemukan",
+    "Select?" : "Pilih?"
 }

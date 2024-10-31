@@ -121,8 +121,10 @@ $destroy = function($id) {
         <label for="modal_shipment_container" class="btn btn-sm btn-base-200 my-4">{{ __('Add') }}</label>
     </div>
 
-    <x-form.modal id="modal_shipment_container" class="-mt-2" :title="__('Shipments')">
-        <x-select-input name="container_id" wire:model="container_id" labelClass="-mt-4 mb-6" :title="__('Container')" :data="$this->containers" getData="server" display_name="number_container"/>
+    <x-form.modal id="modal_shipment_container" class="-mt-2 w-10/12 max-w-5xl h-2/5" :title="__('Shipments')">
+        <x-input-label :value="__('Container')" class="-mt-3 mb-8" />
+        <livewire:dropdown-search model="Container" displayName="number_container" />
+
         <div class="flex justify-end space-x-3">
             <x-button-info class="text-white" wire:click="save('save')">{{ __('Save') }}</x-button-info>
             <x-button-success class="text-white"  wire:click="save('save_add')">{{ __('Save & Add More') }}</x-button-success>
