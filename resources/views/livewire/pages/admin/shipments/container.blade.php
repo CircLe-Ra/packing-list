@@ -12,25 +12,27 @@ title(__('Container'));
 state(['shipment_id' => fn($id) => $id])->locked();
 state(['showing' => 5, 'search' => null])->url();
 state(['container_id' => '']);
-state(['idData']);
-state(['item'=> '', 'quantity' => '']);
+state(['idData', 'dropdownCondition']);
+state(['item'=> '', 'quantity' => '', ]);
 
 usesPagination();
 $shipment_details = computed(function () {
     return ShipmentDetail::where('shipment_id', $this->shipment_id)->paginate($this->showing, pageName: 'shipment-detail-page');
 });
 
-$containers = computed(function () {
-    return Container::whereNotIn('id',function ($query) {
-        $query->select('container_id')->from('shipment_details');
-    })->get();
-});
-
 on(
     [
-        'refresh' => fn () => $this->shipment_details = ShipmentDetail::where('shipment_id', $this->shipment_id)->paginate($this->showing, pageName: 'shipment-detail-page'),
-        'close-modal-x' => fn () => $this->reset('item', 'quantity', 'idData', 'container_id'),
+        'refresh' => function () {
+            $this->shipment_details = ShipmentDetail::where('shipment_id', $this->shipment_id)->paginate($this->showing, pageName: 'shipment-detail-page');
+            $this->dispatch('refresh-dropdown-search');
+        },
+        'close-modal-x' => function () {
+            $this->reset('item', 'quantity', 'idData', 'container_id');
+            $this->dispatch('refresh-dropdown-search');
+        },
         'set-id' => fn ($id) => $this->idData = $id,
+        'dropdown-toggle' => fn ($condition) => $this->dropdownCondition = $condition,
+        'dropdown-selected' => fn ($key, $value) => $this->container_id = $key,
     ]
 );
 
@@ -121,9 +123,14 @@ $destroy = function($id) {
         <label for="modal_shipment_container" class="btn btn-sm btn-base-200 my-4">{{ __('Add') }}</label>
     </div>
 
-    <x-form.modal id="modal_shipment_container" class="-mt-2 w-10/12 max-w-5xl h-2/5" :title="__('Shipments')">
+    <x-form.modal id="modal_shipment_container" class="-mt-2 w-10/12 max-w-5xl transition-all duration-500 {{ $this->dropdownCondition ? 'h-2/5' : 'h-auto' }}" :title="__('Shipments')">
         <x-input-label :value="__('Container')" class="-mt-3 mb-8" />
         <livewire:dropdown-search model="Container" displayName="number_container" />
+        @error('container_id')
+            <div class="label -mt-7">
+                <span class="label-text-alt text-red-600">{{ $message }}</span>
+            </div>
+        @enderror
 
         <div class="flex justify-end space-x-3">
             <x-button-info class="text-white" wire:click="save('save')">{{ __('Save') }}</x-button-info>
