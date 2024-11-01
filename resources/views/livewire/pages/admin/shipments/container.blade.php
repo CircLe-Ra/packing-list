@@ -29,6 +29,7 @@ on(
         'close-modal-x' => function () {
             $this->reset('item', 'quantity', 'idData', 'container_id');
             $this->dispatch('refresh-dropdown-search');
+            $this->resetValidation(['item', 'quantity', 'idData', 'container_id']);
         },
         'set-id' => fn ($id) => $this->idData = $id,
         'dropdown-toggle' => fn ($condition) => $this->dropdownCondition = $condition,
@@ -147,6 +148,10 @@ $destroy = function($id) {
         </div>
     </x-form.modal>
 
+    <x-form.modal id="modal_item_details" class="-mt-2" :title="__('Item Data')">
+
+    </x-form.modal>
+
     <div>
         <h2 class="card-title">{{ __('Data Containers') }}</h2>
         <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
@@ -166,7 +171,11 @@ $destroy = function($id) {
                                     <h3 class="text-lg font-bold">{{ $shipment_detail->container->number_container }}</h3>
                                 </div>
                                 <div class="w-1/5">
-                                    <h3 class="text-lg font-bold">{{ __('Item') }} : 10</h3>
+                                    <h3 class="text-lg font-bold hover:underline cursor-pointer">
+                                        <label for="modal_item_details" class="cursor-pointer">{{ __('Item') }} : 10
+                                            <svg class="inline -mt-1 font-bold text-gray-400"  xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 512 512"><path fill="currentColor" d="M432 320h-32a16 16 0 0 0-16 16v112H64V128h144a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16H48a48 48 0 0 0-48 48v352a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48V336a16 16 0 0 0-16-16M488 0H360c-21.37 0-32.05 25.91-17 41l35.73 35.73L135 320.37a24 24 0 0 0 0 34L157.67 377a24 24 0 0 0 34 0l243.61-243.68L471 169c15 15 41 4.5 41-17V24a24 24 0 0 0-24-24"/></svg>
+                                        </label>
+                                    </h3>
                                 </div>
                                 <div class="w-1/5">
                                     <h3 class="text-lg font-bold">{{ __('Quantity') }} : 10</h3>
