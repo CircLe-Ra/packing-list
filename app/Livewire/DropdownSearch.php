@@ -76,7 +76,9 @@ class DropdownSearch extends Component
     #[On('refresh-dropdown-search')]
     public function resetSelectedItem()
     {
+        $this->loadItems();
         $this->selectedItem = null;
+        $this->searchTerm = '';
     }
 
     public function render()

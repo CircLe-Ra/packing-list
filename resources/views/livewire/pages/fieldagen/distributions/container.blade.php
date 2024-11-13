@@ -14,7 +14,7 @@ state(['shipment_id' => fn($id) => $id])->locked();
 state(['showing' => 5, 'search' => null])->url();
 state(['container_id' => '']);
 state(['idData', 'dropdownCondition', 'modalDetailShipmentId']);
-state(['item' => '', 'quantity' => '', 'loadingShipmentItem::where('shipment_detail_id', $this->shipment_detail_id)->paginate($this->showing, pageName: 'distribution-verify-page')' => false]);
+state(['item' => '', 'quantity' => '', 'loading' => false]);
 
 usesPagination();
 
@@ -49,29 +49,6 @@ on(
     ]
 );
 
-$save = function ($action) {
-    $this->validate([
-        'container_id' => 'required',
-    ]);
-    try {
-        ShipmentDetail::create([
-            'shipment_id' => $this->shipment_id,
-            'container_id' => $this->container_id
-        ]);
-        $this->reset(['container_id']);
-        if ($action == 'save') {
-            $this->dispatch('close-modal', 'modal_shipment_container');
-        }
-        $this->dispatch('refresh');
-        unset($this->shipment_details);
-        Toaster::success(__('Container has been added'));
-    } catch (Exception $e) {
-        $this->reset(['container_id']);
-        $this->dispatch('close-modal', 'modal_shipment_container');
-        Toaster::error(__('Container could not be added'));
-    }
-};
-
 $saveItem = function ($action) {
     $this->validate([
         'item' => 'required',
@@ -99,36 +76,17 @@ $saveItem = function ($action) {
     }
 };
 
-$destroy = function ($id) {
-    try {
-        $shipment_detail = ShipmentDetail::find($id);
-        $shipment_detail->delete();
-        unset($this->shipment_details);
-        $this->dispatch('refresh');
-        Toaster::success(__('Container has been deleted'));
-    } catch (Throwable $th) {
-        Toaster::error(__('Container could not be deleted'));
-    }
-};
-
-$getShipmentItems = function ($shipmentDetailId)
-{
+$getShipmentItems = function ($shipmentDetailId) {
     $items = ShipmentItem::where('shipment_detail_id', $shipmentDetailId)->get();
     $this->loading = false;
     return $items;
 };
-
-// Menghitung jumlah jenis barang berdasarkan nama item yang unik
-$itemsCount = function ($shipmentDetailId)
-{
+$itemsCount = function ($shipmentDetailId){
     return ShipmentItem::where('shipment_detail_id', $shipmentDetailId)
         ->select('item_name')
         ->distinct()
         ->count();
 };
-
-
-// Menghitung total kuantitas barang dalam kontainer
 $totalQuantity = function ($shipmentDetailId) {
     return ShipmentItem::where('shipment_detail_id', $shipmentDetailId)
         ->sum('quantity');
@@ -144,35 +102,18 @@ $totalQuantity = function ($shipmentDetailId) {
                         'href' => '/dashboard',
                     ],
                     [
-                        'text' => __('Shipment'),
-                        'href' => route('shipments'),
+                        'text' => __('Distribution'),
+                        'href' => route('distribution'),
                     ],
                     [
                         'text' => __('Container')
                     ]
                 ]" class="items-start"
         />
-
-        <label for="modal_shipment_container" class="btn btn-sm btn-base-200 my-4">{{ __('Add') }}</label>
     </div>
 
-    <x-form.modal id="modal_shipment_container" class="-mt-2 w-10/12 max-w-5xl transition-all duration-500 {{ $this->dropdownCondition ? 'h-2/5' : 'h-auto' }}" :title="__('Shipments')">
-        <x-input-label :value="__('Container')" class="-mt-3 mb-8" />
-        <livewire:dropdown-search model="Container" displayName="number_container" />
-        @error('container_id')
-        <div class="label -mt-7">
-            <span class="label-text-alt text-red-600">{{ $message }}</span>
-        </div>
-        @enderror
-
-        <div class="flex justify-end space-x-3">
-            <x-button-info class="text-white" wire:click="save('save')">{{ __('Save') }}</x-button-info>
-            <x-button-success class="text-white"  wire:click="save('save_add')">{{ __('Save & Add More') }}</x-button-success>
-        </div>
-    </x-form.modal>
-
     <!-- Modal for Adding Container -->
-    <x-form.modal id="modal_container_item" class="-mt-2" :title="__('Item Data')">
+    <x-form.modal id="modal_container_item" class="-mt-2 " :title="__('Verify Items')">
         <x-text-input-4 name="item" wire:model="item" labelClass="-mt-4 mb-3" title="{{ __('Item') }}" />
         <x-text-input-4 type="number" name="quantity" wire:model="quantity" labelClass="my-3" title="{{ __('Quantity') }}" />
         <div class="flex justify-end space-x-3">
@@ -239,13 +180,11 @@ $totalQuantity = function ($shipmentDetailId) {
                                 <h3 class="text-lg font-bold">{{ __('Quantity') }} : {{ $this->totalQuantity($shipment_detail->id) }}</h3>
                             </div>
 
-                            <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
-                                <label for="modal_container_item" class="btn btn-sm btn-base-200 w-full md:w-1/2" @click="$dispatch('set-id', { id: {{ $shipment_detail->id }} })">
-                                    {{ __('Add Item') }}
-                                </label>
-                                <x-button-error class="btn-sm text-white w-full md:w-1/2" wire:click="destroy({{ $shipment_detail->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?') }}">
-                                    {{ __('Delete') }}
-                                </x-button-error>
+                            <div class=" md:w-1/5">
+                                <x-button-link href="{{ route('distribution.verify', ['container' =>$this->shipment_id, 'verify' => $shipment_detail->id]) }}"
+                                               class="btn btn-sm btn-base-200 w-full md:w-1/2" >
+                                    {{ __('Verify') }}
+                                </x-button-link>
                             </div>
                         </div>
                     </x-card>

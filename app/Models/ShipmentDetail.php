@@ -19,4 +19,8 @@ class ShipmentDetail extends Model
     public function container(){
         return $this->belongsTo(Container::class);
     }
+
+    public function shipment_items(){
+        return $this->hasMany(ShipmentItem::class);
+    }
 }

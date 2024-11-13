@@ -19,9 +19,11 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('item-type', 'pages.admin.item-type')->name('master-data.item-type');
     Volt::route('consumers', 'pages.admin.consumers')->name('consumers');
     Volt::route('items', 'pages.admin.items')->name('items');
-    Volt::route('orders', 'pages.admin.orders')->name('orders');
     Volt::route('shipments', 'pages.admin.shipments')->name('shipments');
     Volt::route('shipments/data-container/{id}', 'pages.admin.shipments.container')->name('shipments.data-container');
+    Volt::route('distributions', 'pages.fieldagen.distribution')->name('distribution');
+    Volt::route('distributions/items/container/{id}', 'pages.fieldagen.distributions.container')->name('distribution.container');
+    Volt::route('distributions/items/container/{container}/verify/{verify}', 'pages.fieldagen.distributions.verify')->name('distribution.verify');
 });
 
 require __DIR__.'/auth.php';
