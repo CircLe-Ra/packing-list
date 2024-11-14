@@ -11,6 +11,9 @@
     'title' => null,
 ])
 
+@php
+    $dn = explode(',', $display_name);
+@endphp
 
 <label class="w-full form-control {{ $labelClass }}">
     @if($title)
@@ -23,7 +26,12 @@
         <option selected>Pilih?</option>
         @if (count($data))
             @foreach ($data as $dt)
-                <option value="{{ $dt->$value }}">&nbsp;{{ $dt->$display_name }}</option>
+                <option value="{{ $dt->$value }}">&nbsp;
+                    @foreach ($dn as $d)
+                        {{ $dt->$d }}
+                        @if($d != end($dn)) || @endif
+                    @endforeach
+                </option>
             @endforeach
         @else
             <option value="" disabled>Tidak ada data</option>

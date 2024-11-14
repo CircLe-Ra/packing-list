@@ -14,7 +14,7 @@ state(['shipment_id' => fn($id) => $id])->locked();
 state(['showing' => 5, 'search' => null])->url();
 state(['container_id' => '']);
 state(['idData', 'dropdownCondition', 'modalDetailShipmentId']);
-state(['item' => '', 'quantity' => '', 'loadingShipmentItem::where('shipment_detail_id', $this->shipment_detail_id)->paginate($this->showing, pageName: 'distribution-verify-page')' => false]);
+state(['item' => '', 'quantity' => '', 'loading' => false]);
 
 usesPagination();
 
@@ -220,7 +220,7 @@ $totalQuantity = function ($shipmentDetailId) {
         @if($this->shipment_details && $this->shipment_details->isNotEmpty())
             <div class="space-y-4">
                 @foreach($this->shipment_details as $key => $shipment_detail)
-                    <x-card class="overflow-x-auto border">
+                    <x-card class="overflow-x-auto shadow-lg bg-base-300">
                         <div class="flex flex-col md:flex-row md:justify-between space-y-4 md:space-y-0">
                             <div class="md:w-[10%]">
                                 <h3 class="text-lg font-bold">{{ __('Container') }} {{ $loop->iteration }}</h3>
