@@ -7,6 +7,65 @@
 
         <title>{{ $title }} - {{ config('app.name', 'Laravel') }}</title>
 
+        <link href="{{ asset('assets/3party/filepond/filepond.css') }}" rel="stylesheet">
+        <link href="{{ asset('assets/3party/filepond/filepond-plugin-image-preview.css') }}" rel="stylesheet">
+        <style>
+            /* Default light theme styles */
+            .filepond--panel-root {
+                background-color: #eee;
+                /* ... other styles ... */
+            }
+
+            /* ... other default light theme styles ... */
+
+            /* Dark theme styles */
+            .dark .filepond--panel-root {
+                background-color: #333;
+                /* Dark background for the panel */
+                /* ... other dark styles ... */
+            }
+
+            .dark .filepond--drop-label {
+                color: #ddd;
+                /* Lighter text color for dark mode */
+            }
+
+            .dark .filepond--label-action {
+                text-decoration-color: #ccc;
+                /* Lighter underline color for "Browse" button */
+            }
+
+            .dark .filepond--item-panel {
+                background-color: #444;
+                /* Dark background for file items */
+            }
+
+            .dark .filepond--drip-blob {
+                background-color: #555;
+                /* Dark background for the drop circle */
+            }
+
+            .dark .filepond--file-action-button {
+                background-color: rgba(255, 255, 255, 0.5);
+                /* Lighter background for action buttons */
+                color: black;
+                /* Dark text/icon color for action buttons */
+            }
+
+            /* ... other dark theme styles ... */
+
+            /* You can also customize the colors for error and success states in dark mode */
+            .dark [data-filepond-item-state*='error'] .filepond--item-panel {
+                background-color: #ff5555;
+                /* Darker red for errors */
+            }
+
+            .dark [data-filepond-item-state='processing-complete'] .filepond--item-panel {
+                background-color: #55ff55;
+                /* Darker green for success */
+            }
+        </style>
+
         <style>
             [x-cloak] { display: none !important; }
         </style>
@@ -45,5 +104,16 @@
 {{--        <livewire:toast />--}}
         @stack('scripts')
         <x-toaster-hub />
+
+        <script src="{{ asset('assets/3party/filepond/filepond-plugin-file-validate-type.js') }}"></script>
+        <script src="{{ asset('assets/3party/filepond/filepond-plugin-file-validate-size.js') }}"></script>
+        <script src="{{ asset('assets/3party/filepond/filepond-plugin-image-preview.js') }}"></script>
+        <script src="{{ asset('assets/3party/filepond/filepond.js') }}"></script>
+        <script>
+            FilePond.registerPlugin(FilePondPluginFileValidateType);
+            FilePond.registerPlugin(FilePondPluginFileValidateSize);
+            FilePond.registerPlugin(FilePondPluginImagePreview);
+
+        </script>
     </body>
 </html>

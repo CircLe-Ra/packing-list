@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('shipment_detail_id')->constrained('shipment_details')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('item_name',100);
             $table->integer('quantity');
+            $table->integer('item_damaged')->default(0);
             $table->timestamps();
         });
     }

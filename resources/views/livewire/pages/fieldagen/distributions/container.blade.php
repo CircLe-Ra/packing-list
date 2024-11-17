@@ -195,7 +195,7 @@ $totalQuantity = function ($shipmentDetailId) {
 
                             <div class=" md:w-1/5">
                                 <x-button-link href="{{ route('distribution.verify', ['container' =>$this->shipment_id, 'verify' => $shipment_detail->id]) }}"
-                                               class="btn btn-sm btn-neutral w-full md:w-1/2" >
+                                               class="btn btn-sm btn-neutral w-full md:w-1/2" wire:navigate>
                                     {{ __('Verify') }}
                                 </x-button-link>
                             </div>

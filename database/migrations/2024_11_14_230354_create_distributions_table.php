@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('shipment_item_id')->constrained('shipment_items')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('driver_id')->constrained('drivers')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('quantity');
-            $table->integer('damaged_quantity')->default(0);
             $table->enum('status',['pending', 'verified'])->default('pending');
             $table->timestamps();
         });

@@ -1,8 +1,11 @@
-@props(['disabled' => false, 'placeholder' => null, 'type' => 'text', 'labelClass' => '', 'name' => '', 'title' => 'title'])
+@props(['disabled' => false, 'placeholder' => null, 'type' => 'text', 'labelClass' => '', 'name' => '', 'title' => 'title', 'titleTR' => null])
 
   <label class="w-full form-control {{ $labelClass }}">
       <div class="label">
           <span class="label-text">{{ __($title) }}</span>
+          @if($titleTR)
+              <span class="label-text-alt">{{ __($titleTR) }}</span>
+          @endif
       </div>
     @if($placeholder)
         <input type="{{ $type }}" {!! $attributes->merge(['class' => 'input input-bordered w-full ']) !!} placeholder="{{ $placeholder }}" {{ $disabled ? 'disabled' : '' }} />

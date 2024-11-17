@@ -23,7 +23,7 @@
     @endif
     <select  {{ $attributes->whereStartsWith('wire:model') }} id="{{ $id ?? '' }}" name="{{ $name ?? '' }}" @if ($disabled) disabled @endif {{  $attributes->merge(['class' => 'select select-bordered']) }} autofocus>
       @if ($getData == 'server')
-        <option selected value="">Pilih?</option>
+        <option selected>Pilih?</option>
         @if (count($data))
             @foreach ($data as $dt)
                 <option value="{{ $dt->$value }}">&nbsp;

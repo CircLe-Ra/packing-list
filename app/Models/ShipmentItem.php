@@ -15,4 +15,8 @@ class ShipmentItem extends Model
     {
         return $this->belongsTo(ShipmentDetail::class);
     }
+
+    public function distributions(){
+        return $this->hasMany(Distribution::class);
+    }
 }

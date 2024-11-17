@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Driver extends Model
 {
     use HasFactory;
-
     protected $guarded = ['id'];
+
+    public function distributions(){
+        return $this->hasMany(Distribution::class);
+    }
+
 }
