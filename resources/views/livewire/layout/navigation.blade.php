@@ -143,8 +143,7 @@ new class extends Component {
                             </li>
                             <li><a href="{{ route('master-data.container') }}"
                                     wire:navigate>{{ __('Data Containers') }}</a></li>
-                            <li><a href="{{ route('master-data.item-type') }}" wire:navigate>{{ __('Data Unit') }}</a>
-                            </li>
+{{--                            <li><a href="{{ route('master-data.item-type') }}" wire:navigate>{{ __('Data Unit') }}</a></li>--}}
                         </ul>
                     </li>
                     <li>
@@ -200,8 +199,7 @@ new class extends Component {
                             </li>
                             <li><a href="{{ route('master-data.container') }}"
                                     wire:navigate>{{ __('Data Containers') }}</a></li>
-                            <li><a href="{{ route('master-data.item-type') }}"
-                                    wire:navigate>{{ __('Data Unit') }}</a></li>
+{{--                            <li><a href="{{ route('master-data.item-type') }}" wire:navigate>{{ __('Data Unit') }}</a></li>--}}
                         </ul>
                     </details>
                 </li>

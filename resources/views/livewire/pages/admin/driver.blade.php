@@ -131,7 +131,7 @@ $destroy = function($id) {
                             <td>{{ $driver->phone }}</td>
                             <td>{{ $driver->vehicle_number }}</td>
                             <td>{{ $driver->created_at->diffForHumans() }}</td>
-                            <td>
+                            <td class="space-y-1 space-x-1">
                                 <x-button-info class="text-white btn-xs" wire:click="edit({{ $driver->id }})">Edit</x-button-info>
                                 <x-button-error class="text-white btn-xs" wire:click="destroy({{ $driver->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?')}}">
                                     {{ __('Delete') }}

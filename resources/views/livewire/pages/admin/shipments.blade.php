@@ -2,6 +2,7 @@
 
 use function Livewire\Volt\{state, layout, title, computed, on, usesPagination, mount};
 use App\Models\Shipment;
+use Masmerise\Toaster\Toaster;
 
 layout('layouts.app');
 title(__('Shipments'));
@@ -45,7 +46,7 @@ $save = function () {
             $this->dispatch('close-modal');
             $this->dispatch('refresh');
             unset($this->shipments);
-            $this->dispatch('toast', message: __('Shipment has been updated'), data: ['position' => 'top-center', 'type' => 'success']);
+            Toaster::success(__('Shipment has been updated'));
         } else {
             $shipment = new Shipment();
             $shipment->loader_ship = $this->loader_ship;
@@ -56,12 +57,12 @@ $save = function () {
             $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData');
             $this->dispatch('close-modal');
             $this->dispatch('refresh');
-            $this->dispatch('toast', message: __('Shipment has been created'), data: ['position' => 'top-center', 'type' => 'success']);
+            Toaster::success(__('Shipment has been created'));
         }
     } catch (Throwable $th) {
         $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData');
         $this->dispatch('close-modal');
-        $this->dispatch('toast', message: __('Shipment could not be saved'), data: ['position' => 'top-center', 'type' => 'danger']);
+        Toaster::error(__('Shipment could not be saved'));
     }
 
 };
@@ -72,10 +73,10 @@ $destroy = function ($id) {
         $shipment->delete();
         unset($this->shipments);
         $this->dispatch('refresh');
-        $this->dispatch('toast', message: __('Shipment has been deleted'), data: ['position' => 'top-center', 'type' => 'success']);
+        Toaster::success(__('Shipment has been deleted'));
     } catch (Throwable $th) {
-        $this->dispatch('toast', message:$th->getMessage(), data: ['position' => 'top-center', 'type' => 'danger']);
-        $this->dispatch('toast', message: __('Shipment could not be deleted'), data: ['position' => 'top-center', 'type' => 'danger']);
+//        Toaster::error($th->getMessage());
+        Toaster::error(__('Shipment could not be deleted'));
     }
 };
 

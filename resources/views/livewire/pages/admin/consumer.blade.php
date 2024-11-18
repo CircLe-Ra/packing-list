@@ -131,7 +131,7 @@ $destroy = function($id) {
                             <td>{{ $consumer->phone }}</td>
                             <td>{{ $consumer->address }}</td>
                             <td>{{ $consumer->created_at->diffForHumans() }}</td>
-                            <td>
+                            <td class="space-y-1 space-x-1">
                                 <x-button-info class="text-white btn-xs" wire:click="edit({{ $consumer->id }})">Edit</x-button-info>
                                 <x-button-error class="text-white btn-xs" wire:click="destroy({{ $consumer->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?')}}">
                                     {{ __('Delete') }}

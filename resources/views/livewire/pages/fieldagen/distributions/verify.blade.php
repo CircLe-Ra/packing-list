@@ -67,7 +67,7 @@ on([
         $this->idData = $data;
         $this->damagedQuantity = null;
         $this->damagedImages = [];
-        // Dapatkan quantity total dan item_damaged saat ini
+
         $shipmentItem = ShipmentItem::find($data);
         $this->qtyInfo = $shipmentItem->quantity - $shipmentItem->item_damaged;
         $this->itemDamaged = $shipmentItem->item_damaged;
@@ -153,7 +153,6 @@ $deleteDistribution = function () {
     try {
         $distribution = Distribution::findOrFail($this->distributionIdToDelete);
         $distribution->delete();
-        // Update qtyInfo setelah penghapusan
         $this->qtyInfo += $distribution->quantity;
         $this->distributionIdToDelete = null;
         $this->dispatch('refresh');
@@ -202,19 +201,15 @@ $saveDamagedItem = function () {
     }
 
     try {
-        // Proses upload gambar dan simpan path
         $imagePaths = [];
         foreach ($this->damagedImages as $image) {
             $path = $image->store('damaged_items', 'public');
             $imagePaths[] = $path;
         }
 
-        // Update field item_damaged
         $shipment_item->item_damaged += $this->damagedQuantity;
         $shipment_item->save();
 
-        // Simpan detail barang rusak, termasuk gambar
-        // Jika Anda memiliki model DamagedItem, simpan data di sini
          foreach ($imagePaths as $path) {
              ItemDamage::create([
                  'shipment_item_id' => $this->idData,
@@ -270,34 +265,7 @@ $saveDamagedItem = function () {
 
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-900">{{ __('Upload Images') }}</label>
-                <div wire:ignore class="shadow-xl">
-                    <div x-data x-init="() => {
-                        const pond = FilePond.create($refs.inputFilepond);
-                        pond.setOptions({
-                            allowMultiple: true,
-                            server: {
-                                process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
-                                    @this.upload('damagedImages', file, load, error, progress)
-                                },
-                                revert: (filename, load) => {
-                                    @this.removeUpload('damagedImages', filename, load)
-                                },
-                            },
-                            allowImagePreview: true,
-                            imagePreviewMaxHeight: 200,
-                            allowFileTypeValidation: true,
-                            acceptedFileTypes: ['image/png', 'image/jpeg'],
-                            allowFileSizeValidation: true,
-                            maxFileSize: '5MB',
-                        });
-                        this.addEventListener('pond-reset', e => {
-                            pond.removeFiles();
-                        });
-                    }">
-                        <input type="file" x-ref="inputFilepond" multiple>
-                    </div>
-                </div>
-                @error('damagedImages') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <x-filepond wire:model="damagedImages" multiple/>
             </div>
 
             <div class="flex justify-end space-x-3 mt-4">
@@ -408,10 +376,9 @@ $saveDamagedItem = function () {
                                 <li class="py-3 sm:py-4 items-center">
                                     <div x-data="{ open: false }" >
                                         <h3 @click="open = !open" class="flex flex-row items-center justify-between text-lg text-base-content font-bold
-                                        {{ $shipment_item->distributions->count() > 0 ? 'cursor-pointer':'cursor-not-allowed tooltip tooltip-top' }} " data-tip="{{__('No Truck List')}}">{{ __('Truck List') }}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                                 x-transition
-                                                 :class="{ 'rotate-90': open }" >
+                                        {{ $shipment_item->distributions->count() > 0 ? 'cursor-pointer':'cursor-not-allowed tooltip tooltip-top' }} " data-tip="{{__('No Truck List')}}">{{ __('Truck List') }} ({{$shipment_item->distributions->count()}})
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="transition-transform duration-300"
+                                                 :class="{{ $shipment_item->distributions->count() > 0 ? "{'rotate-90': open}":"{}" }}">
                                                 <rect width="24" height="24" fill="none" />
                                                 <path fill="currentColor" d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82" />
                                             </svg>
