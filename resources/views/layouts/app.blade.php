@@ -7,8 +7,8 @@
 
         <title>{{ $title }} - {{ config('app.name', 'Laravel') }}</title>
 
-        <link href="{{ asset('assets/3party/filepond/filepond.css') }}" rel="stylesheet">
-        <link href="{{ asset('assets/3party/filepond/filepond-plugin-image-preview.css') }}" rel="stylesheet">
+        <link href="{{ asset('3party/filepond/filepond.css') }}" rel="stylesheet">
+        <link href="{{ asset('3party/filepond/filepond-plugin-image-preview.css') }}" rel="stylesheet">
         <style>
             /* Default light theme styles */
             .filepond--panel-root {
@@ -105,10 +105,10 @@
         @stack('scripts')
         <x-toaster-hub />
 
-        <script src="{{ asset('assets/3party/filepond/filepond-plugin-file-validate-type.js') }}"></script>
-        <script src="{{ asset('assets/3party/filepond/filepond-plugin-file-validate-size.js') }}"></script>
-        <script src="{{ asset('assets/3party/filepond/filepond-plugin-image-preview.js') }}"></script>
-        <script src="{{ asset('assets/3party/filepond/filepond.js') }}"></script>
+        <script src="{{ asset('3party/filepond/filepond-plugin-file-validate-type.js') }}"></script>
+        <script src="{{ asset('3party/filepond/filepond-plugin-file-validate-size.js') }}"></script>
+        <script src="{{ asset('3party/filepond/filepond-plugin-image-preview.js') }}"></script>
+        <script src="{{ asset('3party/filepond/filepond.js') }}"></script>
         <script>
             FilePond.registerPlugin(FilePondPluginFileValidateType);
             FilePond.registerPlugin(FilePondPluginFileValidateSize);

@@ -16,9 +16,8 @@ title(__('Container'));
 
 state(['shipment_id' => fn($container) => $container, 'shipment_detail_id' => fn($verify) => $verify])->locked();
 state(['showing' => 5, 'search' => null])->url();
-state(['idData', 'driver_id', 'qtyInfo', 'itemDamaged', 'quantity', 'item', 'distributionIdToDelete']);
-state(['damagedQuantity', 'damagedImages']);
-state(['loading' => false, 'openAddItem' => false, 'modalTitle' => '']);
+state(['idData', 'driver_id', 'qtyInfo', 'itemDamaged', 'quantity', 'item', 'distributionIdToDelete','damagedQuantity']);
+state(['loading' => false, 'openAddItem' => false, 'modalTitle' => '', 'damagedImages' => []]);
 
 usesPagination();
 usesFileUploads();
@@ -227,6 +226,7 @@ $saveDamagedItem = function () {
     }
 };
 
+
 ?>
 <div>
     <div class="flex justify-between">
@@ -260,15 +260,14 @@ $saveDamagedItem = function () {
 
     <x-form.modal id="modal_add_damaged_item" class="-mt-2 w-9/12 max-w-xl" :title="$this->modalTitle ? __('Damaged Items') . ' ' . $this->modalTitle : __('Damaged Items')">
         <div>
-            <x-text-input-4 type="number" name="damagedQuantity" wire:model="damagedQuantity" labelClass="mb-3" title="{{ __('Damaged Quantity') }}" />
-            @error('damagedQuantity') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-
+            <x-text-input-4 type="number" name="damagedQuantity" wire:model="damagedQuantity" labelClass="mb-3 -mt-4" title="{{ __('Damaged Item Quantity') }}" />
             <div>
-                <label class="block mb-2 text-sm font-medium text-gray-900">{{ __('Upload Images') }}</label>
+                <label class="block mb-2 text-sm font-medium">{{ __('Upload Images') }}</label>
                 <x-filepond wire:model="damagedImages" multiple/>
+                @error('damagedImages')<span class="text-sm font-medium text-red-600">{{ $message }}</span>@enderror
             </div>
 
-            <div class="flex justify-end space-x-3 mt-4">
+            <div class="flex justify-end space-x-3 mt-7">
                 <x-button-info class="text-white" wire:click="saveDamagedItem">{{ __('Save') }}</x-button-info>
             </div>
         </div>
@@ -351,8 +350,12 @@ $saveDamagedItem = function () {
                                 </li>
                                 <li class="py-3 sm:py-4 flex flex-row items-center justify-between">
                                     <div>
-                                        <h3 class="text-lg font-bold text-base-content">
+                                        <h3 class="text-lg font-bold text-base-content inline-flex items-center">
                                             {{ __('Damaged Items') }}
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 30 30" class="">
+                                                <rect width="30" height="30" fill="none" />
+                                                <path fill="currentColor" d="M10.05 17.55c0 .3.09.55.26.73c.2.19.46.28.79.28c.3 0 .55-.09.73-.28l6.04-6.05v1.95q0 .45.3.75t.75.3c.29 0 .54-.1.74-.31s.3-.45.3-.75V9.7q0-.45-.3-.75c-.3-.3-.45-.3-.74-.3h-4.5c-.29 0-.54.1-.73.3s-.29.44-.29.75c0 .29.1.54.29.73s.44.29.73.29h1.95l-6.06 6.06c-.17.21-.26.47-.26.77" />
+                                            </svg>
                                         </h3>
                                     </div>
                                     <div>
@@ -416,7 +419,7 @@ $saveDamagedItem = function () {
                                 </li>
                                 <li class="py-3 sm:py-4 flex flex-row items-center justify-center gap-2">
                                     <label for="modal_add_checklist" class="btn btn-sm btn-success text-white" @click="$dispatch('rename-title-and-value', { data: '{{ $shipment_item->id }}', name: '{{ $shipment_item->item_name }}' })">{{ __('Checklist Items') }}</label>
-                                    <label for="modal_add_damaged_item" class="btn btn-sm btn-error text-white">{{ __('Damaged Items') }}</label>
+                                    <label for="modal_add_damaged_item" class="btn btn-sm btn-error text-white" @click="$dispatch('open-damaged-modal', { data: '{{ $shipment_item->id }}', name: '{{ $shipment_item->item_name }}' })">{{ __('Damaged Items') }}</label>
                                 </li>
                             </ul>
                         </x-card>
