@@ -173,11 +173,33 @@ $totalQuantity = function ($shipmentDetailId) {
 
     <!-- Modal for Adding Container -->
     <x-form.modal id="modal_container_item" class="-mt-2" :title="__('Item Data')">
-        <x-text-input-4 name="item" wire:model="item" labelClass="-mt-4 mb-3" title="{{ __('Item') }}" />
-        <x-text-input-4 type="number" name="quantity" wire:model="quantity" labelClass="my-3" title="{{ __('Quantity') }}" />
-        <div class="flex justify-end space-x-3">
-            <x-button-info class="text-white" wire:click="saveItem('save')">{{ __('Save') }}</x-button-info>
-            <x-button-success class="text-white"  wire:click="saveItem('save_add')">{{ __('Save & Add More') }}</x-button-success>
+        <div x-data="{
+                        init() {
+                            document.addEventListener('keydown', (event) => {
+                                if (event.ctrlKey && event.key == 'z') {
+                                    event.preventDefault();
+                                    this.$refs.shortcutButtonSave.click();
+                                }else if (event.ctrlKey && event.key == 'a') {
+                                    event.preventDefault();
+                                    this.$refs.shortcutButtonSaveAdd.click();
+                                    this.$refs.itemInput.focus();
+                                }
+                            });
+                        }
+                    }"
+        >
+            <x-text-input-4 x-ref="itemInput" name="item" wire:model="item" labelClass="-mt-4 mb-3" title="{{ __('Item') }}" autofocus />
+            <x-text-input-4 type="number" name="quantity" wire:model="quantity" labelClass="my-3" title="{{ __('Quantity') }}" />
+            <div class="flex justify-end space-x-3">
+                <div>
+                    <x-button-info x-ref="shortcutButtonSave" class="text-white" wire:click="saveItem('save')">{{ __('Save') }}</x-button-info>
+                    <small class="block text-xs mt-1 text-gray-600">{{__('Ctrl + z, Save')}}</small>
+                </div>
+                <div>
+                    <x-button-success x-ref="shortcutButtonSaveAdd" class="text-white"  wire:click="saveItem('save_add')">{{ __('Save & Add More') }}</x-button-success>
+                    <small class="block text-xs mt-1 text-gray-600">{{__('Ctrl + a, Save & Add More')}}</small>
+                </div>
+            </div>
         </div>
     </x-form.modal>
 
@@ -222,7 +244,7 @@ $totalQuantity = function ($shipmentDetailId) {
                 @foreach($this->shipment_details as $key => $shipment_detail)
                     <x-card class="overflow-x-auto shadow-lg bg-base-300">
                         <div class="flex flex-col md:flex-row md:justify-between space-y-4 md:space-y-0">
-                            <div class="md:w-[10%]">
+                            <div class="md:w-[10%] md:text-center">
                                 <h3 class="text-lg font-bold">{{ __('Container') }} {{ $loop->iteration }}</h3>
                             </div>
                             <div class="md:w-[30%] text-center">

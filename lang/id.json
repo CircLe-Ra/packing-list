@@ -445,6 +445,12 @@
     "Shipment item not found" : "Barang pemesanan tidak ditemukan",
     "No available quantity to mark as damaged" : "Tidak ada kuantitas tersedia untuk ditandai sebagai rusak",
     "The damaged quantity exceeds the available items." : "Kuantitas rusak melebihi jumlah barang yang tersedia.",
-    "The number of images must match the damaged quantity." : "Jumlah gambar harus cocok dengan kuantitas rusak."
+    "The number of images must match the damaged quantity." : "Jumlah gambar harus cocok dengan kuantitas rusak.",
+    "Ctrl + z, Save" : "Ctrl + z, Simpan",
+    "Ctrl + a, Save & Add More" : "Ctrl + a, Simpan & Tambahkan Lagi",
+    "Travel Warrant" : "Surat Perjalanan",
+    "Accountability Letter" : "Surat Tanggung Jawab",
+    "Submissions" : "Pengajuan",
+    "Verification" : "Verifikasi"
 
 }

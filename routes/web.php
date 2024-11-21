@@ -24,6 +24,8 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('distributions', 'pages.fieldagen.distribution')->name('distribution');
     Volt::route('distributions/items/container/{id}', 'pages.fieldagen.distributions.container')->name('distribution.container');
     Volt::route('distributions/items/container/{container}/verify/{verify}', 'pages.fieldagen.distributions.verify')->name('distribution.verify');
+    Volt::route('submissions/travel-warrant', 'pages.fieldagen.submissions.travel-warrant')->name('submissions.travel-warrant');
+    Volt::route('submissions/accountability-letter', 'pages.fieldagen.submissions.accountability-latter')->name('submissions.accountability-letter');
 });
 
 require __DIR__.'/auth.php';

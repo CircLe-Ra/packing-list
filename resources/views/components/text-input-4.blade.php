@@ -8,7 +8,7 @@
           @endif
       </div>
     @if($placeholder)
-        <input type="{{ $type }}" {!! $attributes->merge(['class' => 'input input-bordered w-full ']) !!} placeholder="{{ $placeholder }}" {{ $disabled ? 'disabled' : '' }} />
+        <input type="{{ $type }}" {!! $attributes->merge(['class' => 'input input-bordered w-full ']) !!} placeholder="{{ $placeholder }}" {{ $disabled ? 'disabled' : '' }}  />
     @else
         <input type="{{ $type }}" {!! $attributes->merge(['class' => 'input input-bordered w-full ']) !!} {{ $disabled ? 'disabled' : '' }} />
     @endif

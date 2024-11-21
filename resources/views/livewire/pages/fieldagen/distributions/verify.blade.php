@@ -15,7 +15,7 @@ layout('layouts.app');
 title(__('Container'));
 
 state(['shipment_id' => fn($container) => $container, 'shipment_detail_id' => fn($verify) => $verify])->locked();
-state(['showing' => 5, 'search' => null])->url();
+state(['showing' => 6, 'search' => null])->url();
 state(['idData', 'driver_id', 'qtyInfo', 'itemDamaged', 'quantity', 'item', 'distributionIdToDelete','damagedQuantity']);
 state(['loading' => false, 'openAddItem' => false, 'modalTitle' => '', 'damagedImages' => []]);
 
@@ -71,6 +71,9 @@ on([
         $this->qtyInfo = $shipmentItem->quantity - $shipmentItem->item_damaged;
         $this->itemDamaged = $shipmentItem->item_damaged;
     },
+    'show-item-details' => function ($data) {
+        $this->idData = $data;
+    }
 ]);
 
 updated([
@@ -350,9 +353,9 @@ $saveDamagedItem = function () {
                                 </li>
                                 <li class="py-3 sm:py-4 flex flex-row items-center justify-between">
                                     <div>
-                                        <h3 class="text-lg font-bold text-base-content inline-flex items-center">
+                                        <h3 class="text-lg font-bold text-base-content inline-flex items-center hover:underline cursor-pointer" wire:click="$dispatch('show-item-details', { data: {{ $shipment_item->id }} })">
                                             {{ __('Damaged Items') }}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 30 30" class="">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 30 30" class="pt-1">
                                                 <rect width="30" height="30" fill="none" />
                                                 <path fill="currentColor" d="M10.05 17.55c0 .3.09.55.26.73c.2.19.46.28.79.28c.3 0 .55-.09.73-.28l6.04-6.05v1.95q0 .45.3.75t.75.3c.29 0 .54-.1.74-.31s.3-.45.3-.75V9.7q0-.45-.3-.75c-.3-.3-.45-.3-.74-.3h-4.5c-.29 0-.54.1-.73.3s-.29.44-.29.75c0 .29.1.54.29.73s.44.29.73.29h1.95l-6.06 6.06c-.17.21-.26.47-.26.77" />
                                             </svg>
