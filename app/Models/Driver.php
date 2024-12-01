@@ -14,4 +14,20 @@ class Driver extends Model
         return $this->hasMany(Distribution::class);
     }
 
+    public function deliveries()
+    {
+        return $this->hasMany(Delivery::class);
+    }
+
+    public function getStatusAttribute()
+    {
+        $hasWorkStatus = $this->deliveries()
+            ->whereIn('status', ['prefer', 'delivered'])
+            ->exists();
+        return $hasWorkStatus ? 'bussy' : 'free';
+    }
+
+
+
+
 }

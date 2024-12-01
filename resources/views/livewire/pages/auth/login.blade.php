@@ -30,24 +30,19 @@ new #[Layout('layouts.guest')] class extends Component
             <h1 class="text-2xl font-semibold mb-4 text-center">Login</h1>
         </div>
         <div class="divide-y divide-gray-200">
-        <form wire:submit="login">
+        <form wire:submit="login" class="">
             <!-- Email Address -->
             <div>
-                <x-input-label for="email" :value="__('Email')" />
-                <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
-                <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
+                <x-text-input-4 :title="__('Email')" wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
+                <x-input-error class="mt-2" :messages="$errors->get('form.email')" />
             </div>
 
             <!-- Password -->
             <div class="mt-4">
-                <x-input-label for="password" :value="__('Password')" />
-
-                <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full"
+                <x-text-input-4 :title="__('Password')" wire:model="form.password" id="password" class="block mt-1 w-full"
                                 type="password"
                                 name="password"
                                 required autocomplete="current-password" />
-
-                <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
             </div>
 
             <!-- Remember Me -->
@@ -59,11 +54,11 @@ new #[Layout('layouts.guest')] class extends Component
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}" wire:navigate>
-                        {{ __('Forgot your password?') }}
-                    </a>
-                @endif
+{{--                @if (Route::has('password.request'))--}}
+{{--                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}" wire:navigate>--}}
+{{--                        {{ __('Forgot your password?') }}--}}
+{{--                    </a>--}}
+{{--                @endif--}}
 
                 <x-primary-button class="ms-3">
                     {{ __('Log in') }}

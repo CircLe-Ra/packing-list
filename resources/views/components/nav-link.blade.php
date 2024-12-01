@@ -2,7 +2,7 @@
 
 @php
 $classes = ($active ?? false)
-            ? 'font-bold'
+            ? 'font-bold bg-neutral text-neutral-content'
             : '';
 @endphp
 

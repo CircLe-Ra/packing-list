@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
+use Masmerise\Toaster\Toaster;
 
 class LoginForm extends Form
 {
@@ -33,6 +34,7 @@ class LoginForm extends Form
         if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
+            Toaster::error(trans('auth.failed'));
             throw ValidationException::withMessages([
                 'form.email' => trans('auth.failed'),
             ]);

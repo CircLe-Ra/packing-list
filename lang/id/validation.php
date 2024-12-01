@@ -277,5 +277,6 @@ return [
         'item_type'                => 'Jenis Barang',
         'item_id'                  => 'Barang',
         'item'                     => 'Barang',
+        'role_name'               => 'Nama Role',
     ],
 ];

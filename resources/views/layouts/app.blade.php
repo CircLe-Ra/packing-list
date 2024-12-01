@@ -12,8 +12,13 @@
         <style>
             /* Default light theme styles */
             .filepond--panel-root {
-                background-color: #eee;
+                background-color: oklch(var(--b2));
+
                 /* ... other styles ... */
+            }
+
+            .filepond--drop-label.filepond--drop-label label {
+                color: oklch(var(--bc));
             }
 
             /* ... other default light theme styles ... */
@@ -31,7 +36,7 @@
             }
 
             .dark .filepond--label-action {
-                text-decoration-color: #ccc;
+                text-decoration-color: oklch(var(--n));
                 /* Lighter underline color for "Browse" button */
             }
 

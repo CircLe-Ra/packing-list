@@ -87,7 +87,16 @@ $shipment_items = computed(function () {
 });
 
 $drivers = computed(function () {
-    return Driver::all();
+    $shipment_id = $this->shipment_id;
+    return DB::table('drivers')
+        ->whereNotIn('drivers.id', function ($query) use ($shipment_id) {
+            $query->select('driver_id')
+                ->from('deliveries')
+                ->where('shipment_id', '=', $shipment_id)  // Menyaring berdasarkan shipment_id
+                ->whereIn('status', ['prefer', 'delivered']);  // Menyaring status 'prefer' atau 'delivered'
+        })
+        ->select('drivers.*')  // Mengambil semua kolom dari tabel drivers
+        ->get();
 });
 
 $items = computed(function () {
@@ -175,7 +184,7 @@ $saveDamagedItem = function () {
     $this->validate([
         'damagedQuantity' => 'required|integer|min:1',
         'damagedImages' => 'required|array',
-        'damagedImages.*' => 'image|max:5120', // Maksimum 5MB per gambar
+        'damagedImages.*' => 'image|max:5120',
     ]);
 
     $shipment_item = ShipmentItem::find($this->idData);
@@ -410,9 +419,11 @@ $saveDamagedItem = function () {
                                                             <p class="text-sm text-base-content">
                                                                 {{ $distribution->quantity }} {{ __('Cardboard') }}
                                                             </p>
-                                                            <label for="modal_confirm_delete" class="btn btn-xs btn-error text-white" @click="$dispatch('confirm-delete-distribution', { data: '{{ $distribution->id }}'})">
-                                                                {{ __('Delete') }}
-                                                            </label>
+                                                            @if($distribution->driver->status == 'free')
+                                                                <label for="modal_confirm_delete" class="btn btn-xs btn-error text-white" @click="$dispatch('confirm-delete-distribution', { data: '{{ $distribution->id }}'})">
+                                                                    {{ __('Delete') }}
+                                                                </label>
+                                                            @endif
                                                         </div>
                                                     </li>
                                                 @endforeach

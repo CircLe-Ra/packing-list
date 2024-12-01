@@ -129,22 +129,45 @@ new class extends Component {
                             {{ __('Dashboard') }}
                         </x-nav-link>
                     </li>
+                    @role('admin')
                     <li>
-                        <a><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                                <rect width="24" height="24" fill="none" />
-                                <path fill="currentColor"
-                                    d="M6 12.45V9.64c1.47.83 3.61 1.36 6 1.36s4.53-.53 6-1.36v1.41c.17-.02.33-.05.5-.05c.53 0 1.03.1 1.5.26V7c0-2.21-3.58-4-8-4S4 4.79 4 7v10c0 2.21 3.59 4 8 4c.34 0 .67 0 1-.03v-2.02c-.32.05-.65.05-1 .05c-3.87 0-6-1.5-6-2v-2.23c1.61.78 3.72 1.23 6 1.23c.41 0 .81-.03 1.21-.06c.19-.48.47-.91.86-1.24c.06-.31.16-.61.27-.9c-.74.13-1.53.2-2.34.2c-2.42 0-4.7-.6-6-1.55M12 5c3.87 0 6 1.5 6 2s-2.13 2-6 2s-6-1.5-6-2s2.13-2 6-2m9 11v-.5a2.5 2.5 0 0 0-5 0v.5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h5c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1m-1 0h-3v-.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5z" />
-                            </svg>
-                            Master Data</a>
-                        <ul class="p-2">
-                            <li><a href="{{ route('master-data.consumer') }}"
-                                    wire:navigate>{{ __('Data Consumers') }}</a></li>
-                            <li><a href="{{ route('master-data.driver') }}" wire:navigate>{{ __('Data Drivers') }}</a>
-                            </li>
-                            <li><a href="{{ route('master-data.container') }}"
-                                    wire:navigate>{{ __('Data Containers') }}</a></li>
-{{--                            <li><a href="{{ route('master-data.item-type') }}" wire:navigate>{{ __('Data Unit') }}</a></li>--}}
-                        </ul>
+                        <details class="{{ request()->routeIs('master-data.*') ? 'font-bold bg-neutral text-neutral-content rounded-lg' : '' }}">
+                            <summary>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                    <rect width="24" height="24" fill="none" />
+                                    <path fill="currentColor"
+                                          d="M6 12.45V9.64c1.47.83 3.61 1.36 6 1.36s4.53-.53 6-1.36v1.41c.17-.02.33-.05.5-.05c.53 0 1.03.1 1.5.26V7c0-2.21-3.58-4-8-4S4 4.79 4 7v10c0 2.21 3.59 4 8 4c.34 0 .67 0 1-.03v-2.02c-.32.05-.65.05-1 .05c-3.87 0-6-1.5-6-2v-2.23c1.61.78 3.72 1.23 6 1.23c.41 0 .81-.03 1.21-.06c.19-.48.47-.91.86-1.24c.06-.31.16-.61.27-.9c-.74.13-1.53.2-2.34.2c-2.42 0-4.7-.6-6-1.55M12 5c3.87 0 6 1.5 6 2s-2.13 2-6 2s-6-1.5-6-2s2.13-2 6-2m9 11v-.5a2.5 2.5 0 0 0-5 0v.5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h5c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1m-1 0h-3v-.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5z" />
+                                </svg> Master Data
+                            </summary>
+                            <ul class="w-40 p-2">
+                                <li>
+                                    <x-nav-link :href="route('master-data.consumer')" :active="request()->routeIs('master-data.consumer*')" wire:navigate>
+                                        {{ __('Data Consumers') }}
+                                    </x-nav-link>
+
+                                </li>
+                                <li>
+                                    <x-nav-link :href="route('master-data.driver')" :active="request()->routeIs('master-data.driver*')" wire:navigate>
+                                        {{ __('Data Drivers') }}
+                                    </x-nav-link>
+                                </li>
+                                <li>
+                                    <x-nav-link :href="route('master-data.container')" :active="request()->routeIs('master-data.container*')" wire:navigate>
+                                        {{ __('Data Containers') }}
+                                    </x-nav-link>
+                                </li>
+                                <li>
+                                    <x-nav-link :href="route('master-data.user')" :active="request()->routeIs('master-data.user*')" wire:navigate>
+                                        {{ __('User Management') }}
+                                    </x-nav-link>
+                                </li>
+                                <li>
+                                    <x-nav-link :href="route('master-data.role')" :active="request()->routeIs('master-data.role*')" wire:navigate>
+                                        {{ __('Role Management') }}
+                                    </x-nav-link>
+                                </li>
+                            </ul>
+                        </details>
                     </li>
                     <li>
                         <x-nav-link :href="route('shipments')" :active="request()->routeIs('shipments*')" wire:navigate>
@@ -159,6 +182,26 @@ new class extends Component {
                         </x-nav-link>
                     </li>
                     <li>
+                        <details class="{{ request()->routeIs('submissions.admin.*') ? 'font-bold bg-neutral text-neutral-content rounded-lg' : '' }}">
+                            <summary>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                    <rect width="24" height="24" fill="none" />
+                                    <path fill="currentColor" d="M2 20V4h20v16zm2-2h16V8H4zm6.95-1.45L7.4 13l1.45-1.45l2.1 2.1l4.2-4.2l1.45 1.45zM4 18V6z" />
+                                </svg>
+                                {{ __('Verification')}}
+                            </summary>
+                            <ul class="w-40 p-2">
+                                <li>
+                                    <x-nav-link :href="route('submissions.admin.verify')" :active="request()->routeIs('submissions.admin.verify*')" wire:navigate>
+                                        {{ __('Delivery Order') }}
+                                    </x-nav-link>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+                    @endrole
+                    @role('fieldagen')
+                    <li>
                         <x-nav-link :href="route('distribution')" :active="request()->routeIs('distribution*')" wire:navigate>
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
                                 <rect width="16" height="16" fill="none" />
@@ -167,6 +210,33 @@ new class extends Component {
                             {{ __('Distribution') }}
                         </x-nav-link>
                     </li>
+                    <li>
+                        <details class="{{ request()->routeIs('submissions.delivery*') ? 'font-bold bg-neutral text-neutral-content rounded-lg' : '' }}">
+                            <summary>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                    <rect width="24" height="24" fill="none" />
+                                    <path fill="currentColor" d="M15.25 18.75q.3 0 .525-.225T16 18t-.225-.525t-.525-.225t-.525.225T14.5 18t.225.525t.525.225m2.75 0q.3 0 .525-.225T18.75 18t-.225-.525T18 17.25t-.525.225t-.225.525t.225.525t.525.225m2.75 0q.3 0 .525-.225T21.5 18t-.225-.525t-.525-.225t-.525.225T20 18t.225.525t.525.225M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v6.7q-.475-.225-.975-.387T19 11.075V5H5v14h6.05q.075.55.238 1.05t.387.95zm0-3v1V5v6.075V11zm2-1h4.075q.075-.525.238-1.025t.362-.975H7zm0-4h6.1q.8-.75 1.788-1.25T17 11.075V11H7zm0-4h10V7H7zm11 14q-2.075 0-3.537-1.463T13 18t1.463-3.537T18 13t3.538 1.463T23 18t-1.463 3.538T18 23" />
+                                </svg>
+                                {{ __ ('Submissions')}}
+                            </summary>
+                            <ul class="w-40 p-2">
+                                <li>
+                                    <x-nav-link :href="route('submissions.delivery-order')" :active="request()->routeIs('submissions.delivery-order*')" wire:navigate>
+                                        {{ __('Delivery Order') }}
+                                    </x-nav-link>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+                    @endrole
+                    @role('driver')
+                    <li>
+                        <x-nav-link :href="route('driver.deliveries')" :active="request()->routeIs('driver*')" wire:navigate>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M7.5 2h14v9.5h-2V4h-2v5.618l-3-1.5l-3 1.5V4h-2v5.5h-2zm6 2v2.382l1-.5l1 .5V4zm-5.065 9.25a1.25 1.25 0 0 0-.885.364l-2.05 2.05V19.5h5.627l5.803-1.45l3.532-1.508a.555.555 0 0 0-.416-1.022l-.02.005L13.614 17H10v-2h3.125a.875.875 0 1 0 0-1.75zm7.552 1.152l3.552-.817a2.56 2.56 0 0 1 3.211 2.47a2.56 2.56 0 0 1-1.414 2.287l-.027.014l-3.74 1.595l-6.196 1.549H0v-7.25h4.086l2.052-2.052a3.25 3.25 0 0 1 2.3-.948h.002h-.002h4.687a2.875 2.875 0 0 1 2.862 3.152M3.5 16.25H2v3.25h1.5z"/></svg>
+                            {{ __('Delivery') }}
+                        </x-nav-link>
+                    </li>
+                    @endrole
                 </ul>
             </div>
             <a class="text-xl btn btn-ghost" x-cloak>Packing-List</a>
@@ -183,8 +253,9 @@ new class extends Component {
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </li>
+                @role('admin')
                 <li>
-                    <details class="{{ request()->routeIs('master-data.*') ? 'font-bold' : '' }}">
+                    <details class="{{ request()->routeIs('master-data.*') ? 'font-bold bg-neutral text-neutral-content rounded-lg' : '' }}">
                         <summary>
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
                                 <rect width="24" height="24" fill="none" />
@@ -193,32 +264,32 @@ new class extends Component {
                             </svg> Master Data
                         </summary>
                         <ul class="w-40 p-2">
-                            <li><a href="{{ route('master-data.consumer') }}"
-                                    wire:navigate>{{ __('Data Consumers') }}</a></li>
-                            <li><a href="{{ route('master-data.driver') }}" wire:navigate>{{ __('Data Drivers') }}</a>
+                            <li>
+                                <x-nav-link :href="route('master-data.consumer')" :active="request()->routeIs('master-data.consumer*')" wire:navigate>
+                                    {{ __('Data Consumers') }}
+                                </x-nav-link>
+
                             </li>
-                            <li><a href="{{ route('master-data.container') }}"
-                                    wire:navigate>{{ __('Data Containers') }}</a></li>
-{{--                            <li><a href="{{ route('master-data.item-type') }}" wire:navigate>{{ __('Data Unit') }}</a></li>--}}
-                        </ul>
-                    </details>
-                </li>
-                <li>
-                    <details class="{{ request()->routeIs('master-data.*') ? 'font-bold' : '' }}">
-                        <summary>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                                <rect width="24" height="24" fill="none" />
-                                <path fill="currentColor" d="M2 20V4h20v16zm2-2h16V8H4zm6.95-1.45L7.4 13l1.45-1.45l2.1 2.1l4.2-4.2l1.45 1.45zM4 18V6z" />
-                            </svg>
-                            {{ __('Verification')}}
-                        </summary>
-                        <ul class="w-40 p-2">
-                            <li><a href="{{ route('master-data.consumer') }}"
-                                   wire:navigate>{{ __('Data Consumers') }}</a></li>
-                            <li><a href="{{ route('master-data.driver') }}" wire:navigate>{{ __('Data Drivers') }}</a>
+                            <li>
+                                <x-nav-link :href="route('master-data.driver')" :active="request()->routeIs('master-data.driver*')" wire:navigate>
+                                    {{ __('Data Drivers') }}
+                                </x-nav-link>
                             </li>
-                            <li><a href="{{ route('master-data.container') }}"
-                                   wire:navigate>{{ __('Data Containers') }}</a></li>
+                            <li>
+                                <x-nav-link :href="route('master-data.container')" :active="request()->routeIs('master-data.container*')" wire:navigate>
+                                    {{ __('Data Containers') }}
+                                </x-nav-link>
+                            </li>
+                            <li>
+                                <x-nav-link :href="route('master-data.user')" :active="request()->routeIs('master-data.user*')" wire:navigate>
+                                    {{ __('User Management') }}
+                                </x-nav-link>
+                            </li>
+                            <li>
+                                <x-nav-link :href="route('master-data.role')" :active="request()->routeIs('master-data.role*')" wire:navigate>
+                                    {{ __('Role Management') }}
+                                </x-nav-link>
+                            </li>
                         </ul>
                     </details>
                 </li>
@@ -235,6 +306,26 @@ new class extends Component {
                     </x-nav-link>
                 </li>
                 <li>
+                    <details class="{{ request()->routeIs('submissions.admin.*') ? 'font-bold bg-neutral text-neutral-content rounded-lg' : '' }}">
+                        <summary>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                <rect width="24" height="24" fill="none" />
+                                <path fill="currentColor" d="M2 20V4h20v16zm2-2h16V8H4zm6.95-1.45L7.4 13l1.45-1.45l2.1 2.1l4.2-4.2l1.45 1.45zM4 18V6z" />
+                            </svg>
+                            {{ __('Verification')}}
+                        </summary>
+                        <ul class="w-40 p-2">
+                            <li>
+                                <x-nav-link :href="route('submissions.admin.verify')" :active="request()->routeIs('submissions.admin.verify*')" wire:navigate>
+                                    {{ __('Delivery Order') }}
+                                </x-nav-link>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
+                @endrole
+                @role('fieldagen')
+                <li>
                     <x-nav-link :href="route('distribution')" :active="request()->routeIs('distribution*')" wire:navigate>
                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
                             <rect width="16" height="16" fill="none" />
@@ -245,7 +336,7 @@ new class extends Component {
                 </li>
 
                 <li>
-                    <details class="{{ request()->routeIs('submissions.*') ? 'font-bold' : '' }}">
+                    <details class="{{ request()->routeIs('submissions.delivery*') ? 'font-bold bg-neutral text-neutral-content rounded-lg' : '' }}">
                         <summary>
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
                                 <rect width="24" height="24" fill="none" />
@@ -254,14 +345,23 @@ new class extends Component {
                             {{ __ ('Submissions')}}
                         </summary>
                         <ul class="w-40 p-2">
-                            <li><a href="{{ route('submissions.travel-warrant') }}"
-                                   wire:navigate>{{ __('Travel Warrant') }}</a></li>
+                            <li>
+                                <x-nav-link :href="route('submissions.delivery-order')" :active="request()->routeIs('submissions.delivery-order*')" wire:navigate>
+                                    {{ __('Delivery Order') }}
+                                </x-nav-link>
                             </li>
-                            <li><a href="{{ route('submissions.accountability-letter') }}"
-                                   wire:navigate>{{ __('Accountability Letter') }}</a></li>
                         </ul>
                     </details>
                 </li>
+                @endrole
+                @role('driver')
+                <li>
+                    <x-nav-link :href="route('driver.deliveries')" :active="request()->routeIs('driver*')" wire:navigate>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M7.5 2h14v9.5h-2V4h-2v5.618l-3-1.5l-3 1.5V4h-2v5.5h-2zm6 2v2.382l1-.5l1 .5V4zm-5.065 9.25a1.25 1.25 0 0 0-.885.364l-2.05 2.05V19.5h5.627l5.803-1.45l3.532-1.508a.555.555 0 0 0-.416-1.022l-.02.005L13.614 17H10v-2h3.125a.875.875 0 1 0 0-1.75zm7.552 1.152l3.552-.817a2.56 2.56 0 0 1 3.211 2.47a2.56 2.56 0 0 1-1.414 2.287l-.027.014l-3.74 1.595l-6.196 1.549H0v-7.25h4.086l2.052-2.052a3.25 3.25 0 0 1 2.3-.948h.002h-.002h4.687a2.875 2.875 0 0 1 2.862 3.152M3.5 16.25H2v3.25h1.5z"/></svg>
+                        {{ __('Delivery') }}
+                    </x-nav-link>
+                </li>
+                @endrole
             </ul>
         </div>
         <div class="navbar-end">
@@ -420,6 +520,45 @@ new class extends Component {
                             value="sunset" />
                     </li>
 
+                </ul>
+            </div>
+            <div class="dropdown dropdown-end">
+                <div
+                    tabindex="0"
+                    class="card card-compact dropdown-content bg-base-100 z-[1] mt-3 w-52 shadow">
+                    <div class="card-body">
+                        <span class="text-lg font-bold">8 Items</span>
+                        <span class="text-info">Subtotal: $999</span>
+                        <div class="card-actions">
+                            <button class="btn btn-primary btn-block">View cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                    <div class="w-10 rounded-full">
+                        <img
+                            alt="Tailwind CSS Navbar component"
+                            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                    </div>
+                </div>
+                <ul
+                    tabindex="0"
+                    class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow-xl">
+                    <li class="my-1">
+                        <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
+                    </li>
+                    <li class="my-1">
+                        <a href="{{route('profile')}}" wire:navigate>
+                            {{ __('Profile') }}
+                        </a>
+                    </li>
+                    <li class="my-1">
+                        <button wire:click="logout" >
+                            {{ __('Log Out') }}
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>

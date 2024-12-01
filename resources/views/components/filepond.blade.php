@@ -3,6 +3,7 @@
             const pond = FilePond.create($refs.inputFilepond);
             pond.setOptions({
                 allowMultiple: {{ $attributes->has('multiple') ? 'true' : 'false' }},
+                labelIdle: '{!! __("Drag & Drop your files here or Browse") !!}',
                 server: {
                     process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
                         @this.upload('{{ $attributes->whereStartsWith('wire:model')->first() }}', file, load, error, progress)
