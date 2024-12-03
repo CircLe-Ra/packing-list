@@ -19,12 +19,12 @@ usesPagination();
 
 mount(function () {
     $this->consumers = Consumer::all();
-    $this->deliveries = Delivery::whereIn('status', ['delivered', 'verified', 'success'])->get();
+    $this->deliveries = Delivery::whereIn('status', ['delivered', 'verified', 'success'])->latest()->get();
 });
 
 on(
     [
-        'refresh' => fn() => $this->deliveries = Delivery::where('status', 'prefer')->get(),
+        'refresh' => fn() => $this->deliveries = Delivery::whereIn('status', ['delivered', 'verified', 'success'])->latest()->get(),
         'close-modal-x' => function() {
             $this->idData = null;
         },
@@ -120,18 +120,41 @@ $getDistributionItems = function ($data) {
                         <div class="absolute top-2 right-2">
                             @if($delivery->status == 'verified')
                                 <div class="tooltip" data-tip="{{ __('Verified') }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="#4d88ff" d="m8.6 22.5l-1.9-3.2l-3.6-.8l.35-3.7L1 12l2.45-2.8l-.35-3.7l3.6-.8l1.9-3.2L12 2.95l3.4-1.45l1.9-3.2l3.6.8l-.35 3.7L23 12l-2.45 2.8l.35 3.7l-3.6.8l-1.9 3.2l-3.4-1.45zm2.35-6.95L16.6 9.9l-1.4-1.45l-4.25 4.25l-2.15-2.1L7.4 12z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                         viewBox="0 0 24 24">
+                                        <path fill="#4d88ff"
+                                              d="m8.6 22.5l-1.9-3.2l-3.6-.8l.35-3.7L1 12l2.45-2.8l-.35-3.7l3.6-.8l1.9-3.2L12 2.95l3.4-1.45l1.9-3.2l3.6.8l-.35 3.7L23 12l-2.45 2.8l.35 3.7l-3.6.8l-1.9 3.2l-3.4-1.45zm2.35-6.95L16.6 9.9l-1.4-1.45l-4.25 4.25l-2.15-2.1L7.4 12z" />
+                                    </svg>
                                 </div>
                             @elseif($delivery->status == 'prefer')
                                 <div class="tooltip" data-tip="{{ __('Preferred') }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="#ffe252" fill-rule="evenodd" d="M12 6.5a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3M12 8a3 3 0 1 0-2.905-3.75H1.75a.75.75 0 0 0 0 1.5h7.345A3 3 0 0 0 12 8m-6.5 3a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m1.405.75A3.001 3.001 0 0 1 1 11a3 3 0 0 1 5.905-.75h7.345a.75.75 0 0 1 0 1.5z" clip-rule="evenodd"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                         viewBox="0 0 16 16">
+                                        <path fill="#ffe252" fill-rule="evenodd"
+                                              d="M12 6.5a1.5 1.5 0 1 0 0-3a1.5 1.5 0 0 0 0 3M12 8a3 3 0 1 0-2.905-3.75H1.75a.75.75 0 0 0 0 1.5h7.345A3 3 0 0 0 12 8m-6.5 3a1.5 1.5 0 1 1-3 0a1.5 1.5 0 0 1 3 0m1.405.75A3.001 3.001 0 0 1 1 11a3 3 0 0 1 5.905-.75h7.345a.75.75 0 0 1 0 1.5z"
+                                              clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            @elseif($delivery->status == 'delivered')
+                                <div class="tooltip" data-tip="{{ __('Delivery') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M7.5 2h14v9.5h-2V4h-2v5.618l-3-1.5l-3 1.5V4h-2v5.5h-2zm6 2v2.382l1-.5l1 .5V4zm-5.065 9.25a1.25 1.25 0 0 0-.885.364l-2.05 2.05V19.5h5.627l5.803-1.45l3.532-1.508a.555.555 0 0 0-.416-1.022l-.02.005L13.614 17H10v-2h3.125a.875.875 0 1 0 0-1.75zm7.552 1.152l3.552-.817a2.56 2.56 0 0 1 3.211 2.47a2.56 2.56 0 0 1-1.414 2.287l-.027.014l-3.74 1.595l-6.196 1.549H0v-7.25h4.086l2.052-2.052a3.25 3.25 0 0 1 2.3-.948h.002h-.002h4.687a2.875 2.875 0 0 1 2.862 3.152M3.5 16.25H2v3.25h1.5z"/></svg>
+                                </div>
+                            @elseif($delivery->status == 'success')
+                                <div class="tooltip" data-tip="{{ __('Success') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="#00c72d" d="M11.4 6.85a.5.5 0 0 0-.707-.707l-3.65 3.65l-1.65-1.65a.5.5 0 0 0-.707.707l2 2a.5.5 0 0 0 .707 0l4-4z"/><path fill="#00c72d" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8s8-3.58 8-8s-3.58-8-8-8M1 8c0-3.87 3.13-7 7-7s7 3.13 7 7s-3.13 7-7 7s-7-3.13-7-7" clip-rule="evenodd"/></svg>
                                 </div>
                             @else
                                 <div class="tooltip" data-tip="{{ __('Pending') }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="#858585" fill-rule="evenodd" d="M8 1a1 1 0 0 0-.716.302l-6 6.156A1 1 0 0 0 1 8.156V16a1 1 0 0 0 .293.707l6 6A1 1 0 0 0 8 23h8a1 1 0 0 0 .707-.293l6-6A1 1 0 0 0 23 16V8.156a1 1 0 0 0-.284-.698l-6-6.156A1 1 0 0 0 16 1zm0 10a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2z" clip-rule="evenodd"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                         viewBox="0 0 24 24">
+                                        <path fill="#858585" fill-rule="evenodd"
+                                              d="M8 1a1 1 0 0 0-.716.302l-6 6.156A1 1 0 0 0 1 8.156V16a1 1 0 0 0 .293.707l6 6A1 1 0 0 0 8 23h8a1 1 0 0 0 .707-.293l6-6A1 1 0 0 0 23 16V8.156a1 1 0 0 0-.284-.698l-6-6.156A1 1 0 0 0 16 1zm0 10a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2z"
+                                              clip-rule="evenodd" />
+                                    </svg>
                                 </div>
                             @endif
                         </div>
+
                         <div class="flex flex-col text-center mb-2">
                             <h5 class="text-xl font-bold text-base-content leading-5">
                                 <span class="block mb-2">{{ __('Truck') }}</span>
@@ -206,7 +229,12 @@ $getDistributionItems = function ($data) {
                                 </div>
                             </li>
                             <li class="pt-3 sm:pt-4 flex flex-row items-center justify-end gap-2">
-
+                                    <a target="_blank" href="{{ route('submission.acceptance.print', $delivery->id) }}" class="btn btn-sm btn-info text-white">
+                                        {{ __('Print Goods Receipt Minutes') }}
+                                    </a>
+                                    <a target="_blank" href="{{ route('submission.travel-document.print', $delivery->id) }}" class="btn btn-sm btn-info text-white">
+                                        {{ __('Print Travel Document') }}
+                                    </a>
                             </li>
                         </ul>
                     </x-card>

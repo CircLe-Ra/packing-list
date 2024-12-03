@@ -12,5 +12,8 @@ class Shipment extends Model
         return $this->hasMany(ShipmentDetail::class);
     }
 
-    
+    public function deliveries() {
+        return $this->hasMany(Delivery::class);
+    }
+
 }

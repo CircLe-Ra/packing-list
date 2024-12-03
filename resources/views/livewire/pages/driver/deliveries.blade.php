@@ -102,13 +102,8 @@ $saveImageEnd = function () {
 };
 
 $print = function ($id) {
-    // Mengambil data pengiriman dengan relasi 'driver' dan 'deliveryImage'
     $data = Delivery::with('driver', 'delivery_images')->find($id);
-
-    // Menghasilkan PDF dengan view 'livewire.report.driver' dan data yang dikirim
     $pdf = Pdf::loadView('livewire.report.driver', ['data' => $data]);
-
-    // Menggunakan download() untuk mengunduh file PDF
     return $pdf->download('delivery_report.pdf');
 };
 
@@ -235,6 +230,10 @@ $print = function ($id) {
                                         <path fill="#4d88ff"
                                               d="m8.6 22.5l-1.9-3.2l-3.6-.8l.35-3.7L1 12l2.45-2.8l-.35-3.7l3.6-.8l1.9-3.2L12 2.95l3.4-1.45l1.9-3.2l3.6.8l-.35 3.7L23 12l-2.45 2.8l.35 3.7l-3.6.8l-1.9 3.2l-3.4-1.45zm2.35-6.95L16.6 9.9l-1.4-1.45l-4.25 4.25l-2.15-2.1L7.4 12z" />
                                     </svg>
+                                </div>
+                            @elseif($delivery->status == 'success')
+                                <div class="tooltip" data-tip="{{ __('Success') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16"><path fill="#00c72d" d="M11.4 6.85a.5.5 0 0 0-.707-.707l-3.65 3.65l-1.65-1.65a.5.5 0 0 0-.707.707l2 2a.5.5 0 0 0 .707 0l4-4z"/><path fill="#00c72d" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8s8-3.58 8-8s-3.58-8-8-8M1 8c0-3.87 3.13-7 7-7s7 3.13 7 7s-3.13 7-7 7s-7-3.13-7-7" clip-rule="evenodd"/></svg>
                                 </div>
                             @elseif($delivery->status == 'prefer')
                                 <div class="tooltip" data-tip="{{ __('Preferred') }}">

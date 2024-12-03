@@ -50,6 +50,9 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/delivery/{id}/print', [\App\Http\Controllers\ReportController::class, 'delivery'])->name('delivery.print');
+    Route::get('/shipment/item-damage/{id}/print', [\App\Http\Controllers\ReportController::class, 'itemDamaged'])->name('shipment.item-damage.print');
+    Route::get('/submission/acceptance/{id}/print', [\App\Http\Controllers\ReportController::class, 'acceptance'])->name('submission.acceptance.print');
+    Route::get('/submission/travel-document/{id}/print', [\App\Http\Controllers\ReportController::class, 'travelDocument'])->name('submission.travel-document.print');
 });
 
 require __DIR__.'/auth.php';

@@ -11,7 +11,7 @@ class   ShipmentItem extends Model
 
     protected $guarded = ['id'];
 
-    protected $with = ['distributions'];
+    protected $with = ['distributions','item_damages'];
 
     public function shipment_detail()
     {
@@ -20,5 +20,10 @@ class   ShipmentItem extends Model
 
     public function distributions(){
         return $this->hasMany(Distribution::class);
+    }
+
+    public function item_damages()
+    {
+        return $this->hasMany(ItemDamage::class);
     }
 }

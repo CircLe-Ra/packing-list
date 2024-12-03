@@ -24,4 +24,8 @@ class Delivery extends Model
         return $this->hasMany(DeliveryImage::class);
     }
 
+    public function shipment(){
+        return $this->belongsTo(Shipment::class);
+    }
+
 }

@@ -12,7 +12,7 @@ layout('layouts.app');
 title(__('Verify Truck'));
 
 state(['showing' => 6, 'search' => null])->url();
-state(['idData', 'delivery_id', 'bapb_number']);
+state(['idData', 'delivery_id', 'bapb_number', 'dosj_number']);
 state(['loading' => false, 'drivers' => [], 'consumers' => [], 'deliveries' => [], 'openItem' => false]);
 
 usesPagination();
@@ -45,16 +45,17 @@ $getDistributionItems = function ($data) {
 $verify = function () {
    $validated = $this->validate([
         'bapb_number' => 'required'
+        'dosj_number' => 'required'
     ]);
     $validated['status'] = 'verified';
     try {
        Delivery::where('id', $this->delivery_id)->update($validated);
-        $this->reset(['bapb_number', 'delivery_id']);
+        $this->reset(['bapb_number', 'delivery_id', 'dosj_number']);
         $this->dispatch('refresh');
         $this->dispatch('close-modal', 'modal_verify');
         Toaster::success('Truck has been verified');
     }catch (Exception $e) {
-        $this->reset(['bapb_number', 'delivery_id']);
+        $this->reset(['bapb_number', 'delivery_id', 'dosj_number']);
         $this->dispatch('refresh');
         $this->dispatch('close-modal', 'modal_verify');
         Toaster::error('Truck could not be verified');
@@ -85,6 +86,7 @@ $verify = function () {
 
     <x-form.modal id="modal_verify" class="-mt-2 w-9/12 max-w-xl" :title="__('Verify Truck')">
         <x-text-input-4 type="text" name="bapb_number" wire:model="bapb_number" labelClass="mb-3 -mt-4" title="{{ __('BAPB Number') }}" />
+        <x-text-input-4 type="text" name="dosj_number" wire:model="dosj_number" labelClass="mb-3 -mt-4" title="{{ __('DO/SJ Number') }}" />
         <div class="flex justify-end mt-4">
             <button class="text-white btn btn-info" wire:click="verify">{{ __('Verify') }}</button>
         </div>
