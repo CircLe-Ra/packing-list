@@ -92,6 +92,16 @@ class ReportController extends Controller
     public function travelDocument($id)
     {
         $data = Delivery::with('driver','consumer')->find($id);
+        $shipment_id = $data->shipment_id;
+        $quantities = Distribution::whereHas('shipment_item', function($query) use ($shipment_id) {
+            $query->whereHas('shipment_detail', function($query) use ($shipment_id) {
+                $query->where('shipment_id', $shipment_id);
+            });
+        })
+            ->where('driver_id', $data->driver_id)
+            ->with('shipment_item') // Load shipmentItem to get the item_name
+            ->get();
+
         $akhlakImage = base64_encode(File::get(public_path('img/akhlak.jpg')));
         $pelniImage = base64_encode(File::get(public_path('img/pelni.png')));
         $footerImage = base64_encode(File::get(public_path('img/footer.png')));
@@ -101,6 +111,7 @@ class ReportController extends Controller
             'akhlakImage' => $akhlakImage,
             'pelniImage' => $pelniImage,
             'footerImage' => $footerImage,
+            'quantities' => $quantities,
             ]);
         return $pdf->stream('travel_document.pdf');
     }

@@ -239,57 +239,55 @@ function angkaTerbilang($angka) {
 
     <!-- Title -->
     <div class="title">
-        BERITA ACARA PENERIMAAN BARANG
+        <h1>SURAT JALAN MOBIL</h1>
+        <h3>{{ $data->dosj_number }}</h3>
     </div>
     <!-- Content -->
     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;border:none;">
         <tr>
-            <td style="width: 30%; font-weight: bold;border:none;">Nomor BAPB</td>
-            <td style="border:none;">: {{ $data->bapb_number }}</td>
+            <td style="width: 30%; font-weight: bold;border:none;">Nomor Kendaraan</td>
+            <td style="border:none;">: {{ $data->driver->vehicle_number }}</td>
         </tr>
         <tr>
-            <td style="font-weight: bold;border:none;">Penerima</td>
-            <td style="border:none;">: {{ $data->consumer->name }}</td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold;border:none;">Alamat</td>
-            <td style="border:none;">: {{ $data->consumer->address }}</td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold;border:none;">Kapal Pemuat</td>
+            <td style="font-weight: bold;border:none;">EX. KM</td>
             <td style="border:none;">: {{ $data->shipment->loader_ship }}</td>
         </tr>
         <tr>
-            <td style="font-weight: bold;border:none;">TA - TD Kapal</td>
-            <td style="border:none;">: {{ $data->shipment->ta_shipment }} - {{ $data->shipment->td_shipment }}</td>
+            <td style="font-weight: bold;border:none;">Dari</td>
+            <td style="border:none;">:
+            @foreach ($quantities as $distribution)
+                <ul>
+                    <li>{{ $distribution->shipment_item->shipment_detail->container->number_container }}</li>
+                </ul>
+            @endforeach
+            </td>
         </tr>
         <tr>
-            <td style="font-weight: bold;border:none;">Tanggal Berangkat</td>
-            <td style="border:none;">: {{ $data->departure_date }}</td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold;border:none;">Tanggal Penyerahan</td>
-            <td style="border:none;">: {{ $data->arrival_date }}</td>
+            <td style="font-weight: bold;border:none;">Ke</td>
+            <td style="border:none;">: {{ $data->consumer->address }}</td>
         </tr>
     </table>
-    <p>Jenis - Jenis Barang Yang Diserahkan :</p>
     <!-- Table -->
     <table>
         <thead>
         <tr>
             <th>No</th>
-            <th>{{ __('Party') }}</th>
-            <th>{{ __('Item Name') }}</th>
-            <th>{{ __('No. Cont/Seal') }}</th>
+            <th>{{ __('Merk & Number') }}</th>
+            <th>{{ __('Colly Quantity') }}</th>
+            <th>{{ __('Colly Type') }}</th>
+            <th>{{ __('Item Type') }}</th>
+            <th>{{ __('Description') }}</th>
         </tr>
         </thead>
         <tbody>
         @foreach ($quantities as $distribution)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $distribution->quantity }} {{ __('Cardboard') }}</td>
-                <td>{{ $distribution->shipment_item->item_name }}</td>
                 <td>{{ $distribution->shipment_item->shipment_detail->container->number_container }}</td>
+                <td>{{ $distribution->quantity }}</td>
+                <td> {{ __('Cardboard') }}</td>
+                <td>{{ $distribution->shipment_item->item_name }}</td>
+                <td></td>
             </tr>
         @endforeach
         </tbody>
@@ -299,32 +297,27 @@ function angkaTerbilang($angka) {
     <table class="signature-table" style="border: none; width: 100%; border-collapse: collapse;">
         <tr>
             <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 10px;">
-                <p>Penerima ditujukan</p>
+                <p>Pengemudi</p>
+                <br />
+                <br />
+                <p>{{ $data->driver->name }}</p>
+            </td>
+            <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 10px;">
+                <p style="margin-top: -3px; margin-bottom: -3px;">Pemilik Barang</p>
                 <br />
                 <br />
                 <p>{{ $data->consumer->name }}</p>
             </td>
             <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 10px;">
-                <p style="margin-top: -3px; margin-bottom: -3px;">Disaksikan :</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">Balai Pengelola</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">Transport Darat</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">Kelas II Papua</p>
-                <br />
-                <br />
-                <p>ARISCA AULIA, A.Md</p>
-            </td>
-            <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 10px;">
-                <p style="margin-top: -3px; margin-bottom: -3px;">Disaksikan :</p>
                 <p style="margin-top: -3px; margin-bottom: -3px;">Perum Damri</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">Cabang Merauke</p>
                 <br />
                 <br />
-                <p>ARIEF HERMANTO, SE.,MM</p>
+                <p>LAMUSA L. ,S.Sos</p>
             </td>
             <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 10px;">
                 <p style="margin-top: -3px; margin-bottom: -3px;">Merauke, {{ $data->departure_date }}</p>
                 <p style="margin-top: -3px; margin-bottom: -3px;">Pengirim</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">PT. Sarana Bandar Logistik</p>
+                <p style="margin-top: -3px; margin-bottom: -3px;">JPT PT. SBL</p>
                 <br />
                 <br />
                 <p>ENDAH WAHYUNINGSIH</p>

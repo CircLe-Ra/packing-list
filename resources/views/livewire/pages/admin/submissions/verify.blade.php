@@ -44,7 +44,7 @@ $getDistributionItems = function ($data) {
 
 $verify = function () {
    $validated = $this->validate([
-        'bapb_number' => 'required'
+        'bapb_number' => 'required',
         'dosj_number' => 'required'
     ]);
     $validated['status'] = 'verified';

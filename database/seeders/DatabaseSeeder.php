@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
         ])->assignRole('fieldagen');
 
         Consumer::factory()->count(10)->create();
-        Driver::factory()->count(10)->create();
+        Driver::factory()->count(1)->create();
         Container::factory()->count(10)->create();
     }
 }

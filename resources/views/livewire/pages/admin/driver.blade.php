@@ -28,6 +28,12 @@ on(['refresh' => fn() => $this->drivers = Driver::where('name', 'like', '%' . $t
     ->latest()->paginate($this->showing, pageName: 'driver-page')
 ]);
 
+$getUniqueNumber = function () {
+    $latestDriverNumber = \App\Models\User::where('email', 'like', 'driver%')->max('email');
+    $nextNumber = (int) filter_var($latestDriverNumber, FILTER_SANITIZE_NUMBER_INT) + 1;
+    return $nextNumber;
+};
+
 $store = function() {
     $this->validate([
         'name' => 'required',
@@ -37,6 +43,9 @@ $store = function() {
 
     try {
         if ($this->idData) {
+            \App\Models\User::where('id', Driver::find($this->idData)->user_id)->update([
+                'name' => $this->name
+            ]);
             Driver::find($this->idData)->update([
                 'name' => $this->name,
                 'phone' => $this->phone,
@@ -48,7 +57,13 @@ $store = function() {
             $this->dispatch('toast', message: __('Driver has been updated'), data: ['position' => 'top-center', 'type' => 'success']);
             Toaster::success(__('Driver has been updated'));
         }else {
+            $user = \App\Models\User::create([
+                'name' => $this->name,
+                'email' => 'driver' . $this->getUniqueNumber() . '@driver.com',
+                'password' => bcrypt('12345'),
+            ])->assignRole('driver');
             Driver::create([
+                'user_id' => $user->id,
                 'name' => $this->name,
                 'phone' => $this->phone,
                 'vehicle_number' => $this->vehicle_number,
@@ -83,7 +98,9 @@ $destroy = function($id) {
     } catch (\Throwable $th) {
         Toaster::error(__('Driver could not be deleted'));
     }
-}
+};
+
+
 
 ?>
 
@@ -106,7 +123,7 @@ $destroy = function($id) {
                 <form wire:submit="store" class="px-10">
                     <input type="hidden" wire:model="idData">
                     <x-text-input-2 name="name" wire:model="name" labelClass="my-3" :placeholder="__('Name')" />
-                    <x-text-input-2 type="number" name="phone" wire:model="phone" labelClass="my-3" :placeholder="__('Phone Number')" />
+                    <x-text-input-2 type="text" name="phone" max="16" wire:model="phone" labelClass="my-3" :placeholder="__('Phone Number')" />
                     <x-text-input-2 name="vehicle_number" wire:model="vehicle_number" labelClass="my-3" :placeholder="__('Vehicle Number')" />
                     <div class="justify-end card-actions">
                         <x-button-neutural type="reset">{{ __('Cancel') }}</x-button-neutural>

@@ -35,6 +35,7 @@ class DriverFactory extends Factory
         $platNomor = sprintf('%s %d %s', $kodeDepan, $angkaTengah, $hurufBelakang);
 
         return [
+            'user_id' => 2,
             'name' => fake()->name(),
             'phone' => fake()->phoneNumber(),
             'vehicle_number' => $platNomor,
