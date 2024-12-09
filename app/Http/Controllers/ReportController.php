@@ -17,7 +17,7 @@ class ReportController extends Controller
     {
         $data = Delivery::with('driver', 'delivery_images')->find($id);
         $pdf = Pdf::loadView('livewire.report.driver', ['data' => $data]);
-        return $pdf->download('delivery_report.pdf');
+        return $pdf->stream('delivery_report.pdf');
     }
 
     public function itemDamaged($id)
@@ -114,5 +114,16 @@ class ReportController extends Controller
             'quantities' => $quantities,
             ]);
         return $pdf->stream('travel_document.pdf');
+    }
+
+    public function container($id)
+    {
+        $shipment = Shipment::find($id);
+        $data = ShipmentDetail::where('shipment_id', $id)->get();
+        $pdf = Pdf::loadView('livewire.report.container', [
+            'datas' => $data,
+            'shipment' => $shipment
+            ]);
+        return $pdf->stream('container_report.pdf');
     }
 }

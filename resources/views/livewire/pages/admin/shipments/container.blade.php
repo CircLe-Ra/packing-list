@@ -14,7 +14,7 @@ state(['shipment_id' => fn($id) => $id])->locked();
 state(['showing' => 5, 'search' => null])->url();
 state(['container_id' => '']);
 state(['idData', 'dropdownCondition', 'modalDetailShipmentId']);
-state(['item' => '', 'quantity' => '', 'loading' => false]);
+state(['item' => '', 'quantity' => '', 'loading' => false, 'edit' => false]);
 
 usesPagination();
 
@@ -38,8 +38,17 @@ on(
             $this->dispatch('refresh-dropdown-search');
             $this->resetValidation(['item', 'quantity', 'idData', 'container_id']);
             $this->modalDetailShipmentId = null;
+            $this->edit = false;
         },
         'set-id' => fn ($id) => $this->idData = $id,
+        'set-id-edit' => function ($id) {
+            $this->dispatch('close-modal', 'modal_item_details');
+            $this->idData = $id;
+            $edit = ShipmentItem::find($id);
+            $this->item = $edit->item_name;
+            $this->quantity = $edit->quantity;
+            $this->edit = true;
+        },
         'dropdown-toggle' => fn ($condition) => $this->dropdownCondition = $condition,
         'dropdown-selected' => fn ($key, $value) => $this->container_id = $key,
         'show-item-details' => function ($id) {
@@ -53,6 +62,7 @@ $save = function ($action) {
     $this->validate([
         'container_id' => 'required',
     ]);
+
     try {
         ShipmentDetail::create([
             'shipment_id' => $this->shipment_id,
@@ -78,13 +88,21 @@ $saveItem = function ($action) {
         'quantity' => 'required',
     ]);
     try {
-        ShipmentItem::create([
-            'shipment_detail_id' => $this->idData,
-            'item_name' => $this->item,
-            'quantity' => $this->quantity
-        ]);
+        if ($this->idData) {
+            ShipmentItem::find($this->idData)->update([
+                'shipment_detail_id' => $this->idData,
+                'item_name' => $this->item,
+                'quantity' => $this->quantity
+            ]);
+        }else{
+            ShipmentItem::create([
+                'shipment_detail_id' => $this->idData,
+                'item_name' => $this->item,
+                'quantity' => $this->quantity
+            ]);
+        }
         if ($action == 'save') {
-            $this->reset(['item', 'quantity', 'idData']);
+            $this->reset(['item', 'quantity', 'idData','edit']);
             $this->dispatch('close-modal', 'modal_container_item');
         } else {
             $this->reset(['item', 'quantity']);
@@ -188,7 +206,57 @@ $totalQuantity = function ($shipmentDetailId) {
                         }
                     }"
         >
-            <x-text-input-4 x-ref="itemInput" name="item" wire:model="item" labelClass="-mt-4 mb-3" title="{{ __('Item') }}" autofocus />
+            <div x-data="{
+                            items: JSON.parse(localStorage.getItem('items')) || [],  // Ambil histori inputan dari localStorage
+                            filteredItems: [],
+                            item: '',
+                            filterItems() {
+                                const searchTerm = this.item.toLowerCase();
+                                this.filteredItems = this.items.filter(item => item.toLowerCase().startsWith(searchTerm));  // Filter berdasarkan inputan
+                            },
+                            addItem() {
+                                if (this.item && !this.items.includes(this.item)) {
+                                    this.items.push(this.item);  // Menambahkan item ke histori
+                                    localStorage.setItem('items', JSON.stringify(this.items));  // Menyimpan ke localStorage
+                                }
+                            },
+                            closeDropdown() {
+                                this.filteredItems = [];  // Menutup dropdown
+                            }
+                        }"
+                 x-init="filterItems"
+                 class="relative"
+            >
+
+                <x-text-input-4
+                    x-ref="itemInput"
+                    name="item"
+                    wire:model="item"
+                    labelClass="-mt-4 mb-3"
+                    title="{{ __('Item') }}"
+                    x-model="item"
+                    @input="filterItems"
+                    @focus="filterItems"
+                    @blur="setTimeout(() => { filteredItems = [] }, 200)"
+                />
+
+                <!-- Saran/Autocomplete Dropdown -->
+                <ul x-show="filteredItems.length > 0 && item !== ''"
+                x-cloak
+                class="absolute bg-white shadow-md w-10/12 z-50 max-h-60 overflow-y-auto"
+                style="border: 1px solid #ddd; border-radius: 4px; max-height: 200px;"
+                >
+                <template x-for="suggestion in filteredItems" :key="suggestion">
+                    <li
+                        @click="item = suggestion; filteredItems = []"
+                    class="cursor-pointer p-2 hover:bg-gray-200"
+                    >
+                    <span x-text="suggestion"></span>
+                    </li>
+                </template>
+                </ul>
+            </div>
+
             <x-text-input-4 type="number" name="quantity" wire:model="quantity" labelClass="my-3" title="{{ __('Quantity') }}" />
             <div class="flex justify-end space-x-3">
                 <div>
@@ -196,7 +264,7 @@ $totalQuantity = function ($shipmentDetailId) {
                     <small class="block text-xs mt-1 text-gray-600">{{__('Ctrl + z, Save')}}</small>
                 </div>
                 <div>
-                    <x-button-success x-ref="shortcutButtonSaveAdd" class="text-white"  wire:click="saveItem('save_add')">{{ __('Save & Add More') }}</x-button-success>
+                    <x-button-success x-ref="shortcutButtonSaveAdd" :disabled="$this->edit" class="text-white"  wire:click="saveItem('save_add')">{{ __('Save & Add More') }}</x-button-success>
                     <small class="block text-xs mt-1 text-gray-600">{{__('Ctrl + a, Save & Add More')}}</small>
                 </div>
             </div>
@@ -217,6 +285,7 @@ $totalQuantity = function ($shipmentDetailId) {
                     <tr>
                         <th>{{ __('Item Name') }}</th>
                         <th>{{ __('Quantity') }}</th>
+                        <th>{{ __('Action') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -224,6 +293,13 @@ $totalQuantity = function ($shipmentDetailId) {
                         <tr>
                             <td>{{ $item->item_name }}</td>
                             <td>{{ $item->quantity }}</td>
+                            <td>
+                                <div class="flex space-x-2">
+                                    <label for="modal_container_item" class="btn btn-xs btn-base-200 w-full md:w-1/2" @click="$dispatch('set-id-edit', { id: {{ $item->id }} })">
+                                        {{ __('Edit') }}
+                                    </label>
+                                </div>
+                            </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -254,6 +330,8 @@ $totalQuantity = function ($shipmentDetailId) {
                                 <h3 class="text-lg font-bold hover:underline cursor-pointer">
                                     <label for="modal_item_details" class="cursor-pointer" wire:click="$dispatch('show-item-details', { id: {{ $shipment_detail->id }} })">
                                         {{ __('Item') }}: {{ $this->itemsCount($shipment_detail->id) }}
+
+                                        <svg class="inline -mt-[5px]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M384 224v184a40 40 0 0 1-40 40H104a40 40 0 0 1-40-40V168a40 40 0 0 1 40-40h167.48M336 64h112v112M224 288L440 72"/></svg>
                                     </label>
                                 </h3>
                             </div>

@@ -10,14 +10,39 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
 
 Route::view('profile', 'profile')
     ->name('profile');
 
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, '__invoke'])->name('dashboard');
+    Route::get('/api/get-shipment-date', function (){
+        $getData = \App\Models\Shipment::all();
+        $shipment = [];
+        $unloading = [];
+        foreach ($getData as $dataDate) {
+            $shipment[] = [
+                'title' => __('Tanggal Pengiriman ') . $dataDate->loader_ship,
+                'start' => \Carbon\Carbon::parse($dataDate->ta_shipment)->setTime(0, 0, 1)->format('Y-m-d\TH:i:s'),
+                'end' => \Carbon\Carbon::parse($dataDate->td_shipment)->setTime(23, 59, 0)->format('Y-m-d\TH:i:s'),
+            ];
+            $unloading[] = [
+                'title' => __('Tanggal Bongkaran ') . $dataDate->loader_ship,
+                'start' => \Carbon\Carbon::parse($dataDate->unloading_date)->setTime(0, 0, 1)->format('Y-m-d\TH:i:s'),
+                'end' => \Carbon\Carbon::parse($dataDate->unloading_date)->setTime(23, 59, 0)->format('Y-m-d\TH:i:s')
+            ];
+        }
+        $data = array_merge($shipment, $unloading);
+        return response()->json($data);
+    })->name('api.get-shipment-date');
+
+    //leader
+    Route::middleware(['role:leader'])->group(function () {
+        Volt::route('/report', 'pages.leader.report')->name('report');
+        Volt::route('/report/consumer', 'pages.leader.report-consumer')->name('report.consumer');
+    });
+
     //admin
     Route::middleware(['role:admin'])->group(function () {
         Volt::route('consumer', 'pages.admin.consumer')->name('master-data.consumer');
@@ -53,6 +78,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/shipment/item-damage/{id}/print', [\App\Http\Controllers\ReportController::class, 'itemDamaged'])->name('shipment.item-damage.print');
     Route::get('/submission/acceptance/{id}/print', [\App\Http\Controllers\ReportController::class, 'acceptance'])->name('submission.acceptance.print');
     Route::get('/submission/travel-document/{id}/print', [\App\Http\Controllers\ReportController::class, 'travelDocument'])->name('submission.travel-document.print');
+    Route::get('/report/container/{id}/print', [\App\Http\Controllers\ReportController::class, 'container'])->name('report.container');
 });
 
 require __DIR__.'/auth.php';

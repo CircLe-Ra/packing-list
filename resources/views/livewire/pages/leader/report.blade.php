@@ -1,0 +1,72 @@
+<?php
+
+use function Livewire\Volt\{state, layout, title, computed, on, usesPagination, mount};
+use App\Models\Shipment;
+use Masmerise\Toaster\Toaster;
+
+layout('layouts.app');
+title(__('Shipments'));
+
+usesPagination();
+state(['showing' => 5])->url();
+state(['search' => null])->url();
+
+$shipments = computed(function () {
+    return Shipment::where('loader_ship', 'like', '%' . $this->search . '%')
+        ->orWhere('ta_shipment', 'like', '%' . $this->search . '%')
+        ->orWhere('td_shipment', 'like', '%' . $this->search . '%')
+        ->latest()->paginate($this->showing, pageName: 'shipment-page');
+});
+
+
+?>
+
+<div>
+    <div class="flex justify-between">
+        <x-breadcrumb :crumbs="[
+                    [
+                        'text' => __('Dashboard'),
+                        'href' => '/dashboard',
+                    ],
+                    [
+                        'text' => __('Reports'),
+                        'href' => route('report'),
+                    ]
+                ]"
+                      class="items-start"
+        />
+    </div>
+
+
+    <div>
+        <h2 class="card-title">{{ __('Shipment Data') }}</h2>
+        <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
+            <x-form.filter class="w-24 text-xs select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
+            <x-form.search wire:model.live="search" class="w-32" />
+        </div>
+        <x-divider name="Tabel Data" class="-mt-5" />
+        <x-table class="text-center " thead="No.,Loader Ship,TA Ship,TD Ship,Created At" :action="true">
+            @if ($this->shipments && $this->shipments->isNotEmpty())
+                @foreach ($this->shipments as $key => $shipment)
+                    <tr @if ($key % 2 == 0) class="bg-base-300" @endif>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $shipment->loader_ship }}</td>
+                        <td>{{ $shipment->ta_shipment }}</td>
+                        <td>{{ $shipment->td_shipment }}</td>
+                        <td>{{ $shipment->created_at->diffForHumans() }}</td>
+                        <td class="space-y-1 space-x-1">
+                            <x-button-link href="{{ route('report.container', $shipment->id) }}" class="text-white btn-xs btn-info" target="_blank">{{ __('Print Data Containers') }}</x-button-link>
+                            <x-button-link href="{{ route('report.consumer') }}" class="text-white btn-xs btn-success" wire:navigate>{{ __('Data Consumers') }}</x-button-link>
+                        </td>
+                    </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td colspan="6" class="text-center">{{ __('No Data') }}</td>
+                </tr>
+            @endif
+        </x-table>
+        {{ $this->shipments->links('livewire.pagination') }}
+    </div>
+
+</div>

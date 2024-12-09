@@ -236,6 +236,7 @@ $saveDamagedItem = function () {
         $this->reset(['damagedQuantity', 'damagedImages', 'modalTitle', 'idData']);
         $this->dispatch('close-modal', 'modal_add_damaged_item');
         $this->dispatch('refresh');
+        $this->dispatch('pond-reset');
 
         Toaster::success(__('Damaged items have been recorded'));
     } catch (\Exception $e) {
@@ -474,7 +475,7 @@ $print = function ($id) {
                                     <label for="modal_add_damaged_item" class="btn btn-sm btn-error text-white" @click="$dispatch('open-damaged-modal', { data: '{{ $shipment_item->id }}', name: '{{ $shipment_item->item_name }}' })">{{ __('Damaged Items') }}</label>
                                     </div>
                                     @if($shipment_item->item_damaged > 0)
-                                        <a href="{{ route('shipment.item-damage.print', $this->shipment_id) }}" target="_blank" class="text-white btn btn-sm block" >{{ __('Print Damaged Items Report') }}</a>
+                                        <a href="{{ route('shipment.item-damage.print', $this->shipment_id) }}" target="_blank" class="text-white btn btn-error mt-1 btn-sm" >{{ __('Print Damaged Items Report') }}</a>
                                     @endif
                                 </li>
                             </ul>

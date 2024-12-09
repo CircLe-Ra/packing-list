@@ -137,7 +137,6 @@ $totalQuantity = function ($shipmentDetailId) {
                         <th>{{ __('Item Name') }}</th>
                         <th>{{ __('Quantity') }}</th>
                         <th>{{ __('Item Damaged') }}</th>
-                        <th>{{ __('Checklist') }}</th>
                     </tr>
                     </thead>
                     <tbody class="text-center">
@@ -145,17 +144,7 @@ $totalQuantity = function ($shipmentDetailId) {
                         <tr>
                             <td>{{ $item->item_name }}</td>
                             <td>{{ $item->quantity }}</td>
-                            <td>0</td>
-                            <td>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                    <rect width="24" height="24" fill="none" />
-                                    <path fill="#2e74ff" d="m23 12l-2.44-2.79l.34-3.69l-3.61-.82l-1.89-3.2L12 2.96L8.6 1.5L6.71 4.69L3.1 5.5l.34 3.7L1 12l2.44 2.79l-.34 3.7l3.61.82L8.6 22.5l3.4-1.47l3.4 1.46l1.89-3.19l3.61-.82l-.34-3.69zm-12.91 4.72l-3.8-3.81l1.48-1.48l2.32 2.33l5.85-5.87l1.48 1.48z" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                    <rect width="24" height="24" fill="none" />
-                                    <path fill="#878787" d="m19.03 7.39l1.42-1.42c-.45-.51-.9-.97-1.41-1.41L17.62 6c-1.55-1.26-3.5-2-5.62-2a9 9 0 0 0 0 18c5 0 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61M13 14h-2V7h2zm2-13H9v2h6z" />
-                                </svg>
-                            </td>
+                            <td>{{ $item->item_damaged }}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -185,7 +174,7 @@ $totalQuantity = function ($shipmentDetailId) {
                             <div class="md:w-1/5">
                                 <h3 class="text-lg font-bold hover:underline cursor-pointer">
                                     <label for="modal_item_details" class="cursor-pointer" wire:click="$dispatch('show-item-details', { id: {{ $shipment_detail->id }} })">
-                                        {{ __('Item') }}: {{ $this->itemsCount($shipment_detail->id) }}
+                                        {{ __('Item') }}: {{ $this->itemsCount($shipment_detail->id) }} <svg class="inline -mt-[5px]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M384 224v184a40 40 0 0 1-40 40H104a40 40 0 0 1-40-40V168a40 40 0 0 1 40-40h167.48M336 64h112v112M224 288L440 72"/></svg>
                                     </label>
                                 </h3>
                             </div>

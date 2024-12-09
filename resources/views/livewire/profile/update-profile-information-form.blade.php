@@ -8,8 +8,11 @@ use Livewire\Volt\Component;
 
 new class extends Component
 {
+    use \Livewire\WithFileUploads;
+
     public string $name = '';
     public string $email = '';
+    public $profile_photo;
 
     /**
      * Mount the component.
@@ -30,6 +33,7 @@ new class extends Component
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'profile_photo' => ['nullable', 'image', 'max:2048'], // Validasi untuk foto profil (2MB)
         ]);
 
         $user->fill($validated);
@@ -38,9 +42,22 @@ new class extends Component
             $user->email_verified_at = null;
         }
 
-        $user->save();
+        if ($this->profile_photo) {
+            // Hapus foto profil lama jika ada
+            if ($user->profile_photo_path) {
+                \Storage::disk('public')->delete($user->profile_photo_path);
+            }
 
-        $this->dispatch('profile-updated', name: $user->name);
+            $path = $this->profile_photo->store('profile-photos', 'public');
+            $user->profile_photo_path = $path;
+        }
+
+        $user->save();
+        if ($this->profile_photo) {
+            $this->dispatch('refresh-image', path: $path);
+        }
+        $this->dispatch('pond-reset');
+        $this->dispatch('profile-updated');
     }
 
     /**
@@ -72,8 +89,8 @@ new class extends Component
             {{ __("Update your account's profile information and email address.") }}
         </p>
     </header>
-
-    <form wire:submit="updateProfileInformation" class="mt-6 space-y-6">
+    <div class="grid grid-cols-2 gap-4 items-center">
+        <form wire:submit="updateProfileInformation" class="mt-6 space-y-6">
         <div>
             <x-text-input-4 :title="__('Name')" wire:model="name" id="name" name="name" type="text" class="mt-1 block w-full" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
@@ -102,6 +119,12 @@ new class extends Component
             @endif
         </div>
 
+        <div>
+            <x-input-label for="profile_photo" :value="__('Profile Photo')" class="mb-4" />
+            <x-filepond wire:model="profile_photo" />
+            <x-input-error class="mt-2" :messages="$errors->get('profile_photo')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
@@ -110,4 +133,10 @@ new class extends Component
             </x-action-message>
         </div>
     </form>
+        <div class="flex justify-center">
+            @if(Auth::user()->profile_photo_path)
+                <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" alt="Profile Photo" class="rounded-full w-40 h-40 object-cover" />
+            @endif
+        </div>
+    </div>
 </section>

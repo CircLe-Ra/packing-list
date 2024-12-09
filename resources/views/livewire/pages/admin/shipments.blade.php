@@ -8,7 +8,7 @@ layout('layouts.app');
 title(__('Shipments'));
 
 usesPagination();
-state(['idData' => '', 'loader_ship' => '', 'ta_shipment' => '', 'td_shipment' => '']);
+state(['idData' => '', 'loader_ship' => '', 'ta_shipment' => '', 'td_shipment' => '', 'desc' => '', 'unloading_date' => '']);
 state(['showing' => 5])->url();
 state(['search' => null])->url();
 
@@ -33,6 +33,8 @@ $save = function () {
         'loader_ship' => 'required',
         'ta_shipment' => 'required',
         'td_shipment' => 'required',
+        'unloading_date' => 'nullable',
+        'desc' => 'nullable',
     ]);
 
     try {
@@ -41,8 +43,10 @@ $save = function () {
             $shipment->loader_ship = $this->loader_ship;
             $shipment->ta_shipment = $this->ta_shipment;
             $shipment->td_shipment = $this->td_shipment;
+            $shipment->unloading_date = $this->unloading_date;
+            $shipment->description = $this->desc;
             $shipment->save();
-            $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData');
+            $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData', 'desc', 'unloading_date');
             $this->dispatch('close-modal');
             $this->dispatch('refresh');
             unset($this->shipments);
@@ -52,15 +56,17 @@ $save = function () {
             $shipment->loader_ship = $this->loader_ship;
             $shipment->ta_shipment = $this->ta_shipment;
             $shipment->td_shipment = $this->td_shipment;
+            $shipment->unloading_date = $this->unloading_date;
+            $shipment->description = $this->desc;
             $shipment->save();
             unset($this->shipments);
-            $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData');
+            $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData', 'desc', 'unloading_date');
             $this->dispatch('close-modal');
             $this->dispatch('refresh');
             Toaster::success(__('Shipment has been created'));
         }
     } catch (Throwable $th) {
-        $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData');
+        $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData', 'desc', 'unloading_date');
         $this->dispatch('close-modal');
         Toaster::error(__('Shipment could not be saved'));
     }
@@ -86,6 +92,8 @@ $edit = function ($id) {
     $this->loader_ship = $shipment->loader_ship;
     $this->ta_shipment = $shipment->ta_shipment;
     $this->td_shipment = $shipment->td_shipment;
+    $this->unloading_date = $shipment->unloading_date;
+    $this->desc = $shipment->description;
 
     $this->dispatch('open-modal', 'modal_shipment');
 }
@@ -115,6 +123,9 @@ $edit = function ($id) {
             <x-text-input-4 name="loader_ship" wire:model="loader_ship" labelClass="my-3" :title="__('Loader Ship')" />
             <x-text-input-4 type="date" name="ta_shipment" wire:model="ta_shipment" labelClass="my-3" :title="__('TA Ship')" />
             <x-text-input-4 type="date" name="td_shipment" wire:model="td_shipment" labelClass="my-3" :title="__('TD Ship')" />
+            <x-text-input-4 type="date" name="unloading_date" wire:model="unloading_date" labelClass="my-3" :title="__('Unloading Date')" />
+            <x-text-input-4 type="text" name="desc" wire:model="desc" labelClass="my-3" :title="__('Description')" />
+
             <div class="flex justify-end">
                 <button class="btn btn-primary ">{{ __('Save') }}</button>
             </div>

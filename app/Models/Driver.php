@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Driver extends Model
 {
     use HasFactory;
+
     protected $guarded = ['id'];
 
     public function distributions(){
@@ -27,7 +28,10 @@ class Driver extends Model
         return $hasWorkStatus ? 'bussy' : 'free';
     }
 
-
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
 
 }
