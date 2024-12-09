@@ -19,6 +19,7 @@ class DashboardController extends Controller
         $driverWorks = Driver::whereHas('deliveries', function ($query){
             $query->where('status', 'delivered');
         })->get();
+
         return view('dashboard', compact('totalConsumers', 'totalDrivers', 'totalShipments', 'totalContainers', 'driverWorks'));
     }
 

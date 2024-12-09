@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -27,12 +28,14 @@ Route::middleware(['auth'])->group(function () {
                 'start' => \Carbon\Carbon::parse($dataDate->ta_shipment)->setTime(0, 0, 1)->format('Y-m-d\TH:i:s'),
                 'end' => \Carbon\Carbon::parse($dataDate->td_shipment)->setTime(23, 59, 0)->format('Y-m-d\TH:i:s'),
             ];
-            $unloading[] = [
-                'title' => __('Tanggal Bongkaran ') . $dataDate->loader_ship,
-                'start' => \Carbon\Carbon::parse($dataDate->unloading_date)->setTime(0, 0, 1)->format('Y-m-d\TH:i:s'),
-                'end' => \Carbon\Carbon::parse($dataDate->unloading_date)->setTime(23, 59, 0)->format('Y-m-d\TH:i:s')
-            ];
-        }
+            if($dataDate->unloading_date){
+                $unloading[] = [
+                    'title' => __('Tanggal Bongkaran ') . $dataDate->loader_ship,
+                    'start' => \Carbon\Carbon::parse($dataDate->unloading_date)->setTime(0, 0, 1)->format('Y-m-d\TH:i:s'),
+                    'end' => \Carbon\Carbon::parse($dataDate->unloading_date)->setTime(23, 59, 0)->format('Y-m-d\TH:i:s')
+                ];
+            }
+        };
         $data = array_merge($shipment, $unloading);
         return response()->json($data);
     })->name('api.get-shipment-date');
