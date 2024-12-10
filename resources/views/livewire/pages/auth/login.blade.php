@@ -38,12 +38,28 @@ new #[Layout('layouts.guest')] class extends Component
             </div>
 
             <!-- Password -->
-            <div class="mt-4">
-                <x-text-input-4 :title="__('Password')" wire:model="form.password" id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="current-password" />
+            <div x-data="{ show: false }" class="relative mt-4">
+                <!-- Input field -->
+                <input
+                    :type="show ? 'text' : 'password'"
+                    class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                    id="password"
+                    name="password"
+                    wire:model="form.password"
+                    required
+                    autocomplete="current-password"
+                />
+
+                <!-- Toggle button -->
+                <button
+                    type="button"
+                    @click="show = !show"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                >
+                    <span x-text="show ? 'Hide' : 'Show'" class="text-gray-500 cursor-pointer"></span>
+                </button>
             </div>
+
 
             <!-- Remember Me -->
             <div class="block mt-4">

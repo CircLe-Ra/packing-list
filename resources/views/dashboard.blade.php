@@ -5,7 +5,7 @@
     <div class="py-6">
         <div class="mx-auto sm:px-6 lg:px-8">
             <div class="max-h-40 overflow-hidden rounded-lg mb-4">
-                <img src="{{ asset('img/welcome.png') }}" alt="Welcome Image" class="w-full h-full object-cover" />
+                <img src="{{ asset('img/gas.png') }}" alt="Welcome Image" class="w-full h-full object-cover" />
             </div>
             <div class="shadow-sm sm:rounded-lg grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
                 <div class="p-10 rounded-xl text-base-content bg-base-300 flex justify-between items-center">
