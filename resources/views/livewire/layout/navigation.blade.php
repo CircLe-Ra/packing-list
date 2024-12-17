@@ -291,6 +291,11 @@ new class extends Component {
             </ul>
         </div>
         <div class="navbar-end">
+            <div>
+                <div class="flex justify-center items-center">
+                    <p class="text-base-content"><strong>{{ Str::ucfirst(\App\Models\User::with('roles')->find(auth()->user()->id)->roles->first()->name)  }}</strong></p>
+                </div>
+            </div>
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="m-1 bg-transparent border-0 shadow-none btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24">
