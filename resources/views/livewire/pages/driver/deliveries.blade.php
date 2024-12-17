@@ -22,13 +22,13 @@ usesFileUploads();
 mount(function () {
     $this->consumers = Consumer::all();
     $this->deliveries = Delivery::whereIn('status', ['delivered', 'verified', 'success'])
-        ->where('driver_id', auth()->user()->id)
+        ->where('driver_id', auth()->user()->drivers->id)
         ->get();
 });
 
 on([
     'refresh' => fn() => ($this->deliveries = Delivery::whereIn('status', ['delivered', 'verified', 'success'])
-        ->where('driver_id', auth()->user()->id)
+        ->where('driver_id', auth()->user()->drivers->id)
         ->get()),
     'close-modal-x' => function () {
         $this->idData = null;
@@ -51,8 +51,8 @@ on([
             $this->dispatch('close-modal', 'signature');
             Toaster::error('Signature could not be saved');
         }
-    }
-    ]);
+    },
+]);
 
 $getDistributionItems = function ($data) {
     $distributions = Distribution::where('driver_id', $data)->get();
@@ -120,7 +120,6 @@ $print = function ($id) {
     $pdf = Pdf::loadView('livewire.report.driver', ['data' => $data]);
     return $pdf->download('delivery_report.pdf');
 };
-
 
 ?>
 <div>
@@ -239,10 +238,12 @@ $print = function ($id) {
             </div>
             <div wire:ignore>
                 <x-input-label for="signature-pad" :value="__('Signature Driver')" class="my-4" />
-                <canvas id="signature-pad-driver" class="signature-pad bg-white w-full" width="500" height="200"></canvas>
+                <canvas id="signature-pad-driver" class="signature-pad bg-white w-full" width="500"
+                    height="200"></canvas>
             </div>
             <div class="flex justify-end mt-5">
-                <button class="text-white btn btn-info" wire:click="$dispatch('save-signature')">{{ __('Save') }}</button>
+                <button class="text-white btn btn-info"
+                    wire:click="$dispatch('save-signature')">{{ __('Save') }}</button>
             </div>
         </div>
     </x-form.modal>
@@ -390,9 +391,9 @@ $print = function ($id) {
                                     <label for="modal_upload_km" class="btn btn-sm btn-success text-white"
                                         @click="$dispatch('set-data', { data: '{{ $delivery->id }}' })">{{ __('Upload KM and Vehicle Start') }}</label>
                                 @elseif($delivery->status == 'delivered')
-                                    @if($delivery->signature_consumer == null || $delivery->signature_driver == null)
-                                    <label for="signature" class="btn btn-sm btn-info text-white"
-                                           @click="$dispatch('set-data', { data: '{{ $delivery->id }}' })">{{ __('Signature Consumer') }}</label>
+                                    @if ($delivery->signature_consumer == null || $delivery->signature_driver == null)
+                                        <label for="signature" class="btn btn-sm btn-info text-white"
+                                            @click="$dispatch('set-data', { data: '{{ $delivery->id }}' })">{{ __('Signature Consumer') }}</label>
                                     @endif
                                     <label for="modal_upload_km_end" class="btn btn-sm btn-info text-white"
                                         @click="$dispatch('set-data', { data: '{{ $delivery->id }}' })">{{ __('Upload KM and Vehicle End') }}</label>
@@ -415,40 +416,43 @@ $print = function ($id) {
     </div>
     @pushonce('scripts')
         @script
-        <script>
-            window.addEventListener('livewire:navigated', function() {
-                const signature = document.querySelector('#signature-pad');
-                const signatureDriver = document.querySelector('#signature-pad-driver');
+            <script>
+                window.addEventListener('livewire:navigated', function() {
+                    const signature = document.querySelector('#signature-pad');
+                    const signatureDriver = document.querySelector('#signature-pad-driver');
 
-                // Pastikan plugin tersedia di window
-                if (!window.SignaturePad) {
-                    console.error('Plugin SignaturePad tidak tersedia.');
-                    return;
-                }
+                    // Pastikan plugin tersedia di window
+                    if (!window.SignaturePad) {
+                        console.error('Plugin SignaturePad tidak tersedia.');
+                        return;
+                    }
 
-                const signaturePad = new window.SignaturePad(signature, {
-                    minWidth: 5,
-                    maxWidth: 10,
-                    penColor: "rgb(66, 133, 244)",
+                    const signaturePad = new window.SignaturePad(signature, {
+                        minWidth: 5,
+                        maxWidth: 10,
+                        penColor: "rgb(0, 0, 0)",
+                    });
+
+                    const signaturePadDriver = new window.SignaturePad(signatureDriver, {
+                        minWidth: 5,
+                        maxWidth: 10,
+                        penColor: "rgb(0, 0, 0)",
+                    });
+
+                    Livewire.on('save-signature', () => {
+
+                        const signatureData = signaturePad.toDataURL();
+                        const signatureDataDriver = signaturePadDriver.toDataURL();
+
+                        Livewire.dispatch('signature-consumer', {
+                            signature: signatureData,
+                            signatureDriver: signatureDataDriver
+                        });
+                        signaturePad.clear();
+                        signaturePadDriver.clear();
+                    });
                 });
-
-                const signaturePadDriver = new window.SignaturePad(signatureDriver, {
-                    minWidth: 5,
-                    maxWidth: 10,
-                    penColor: "rgb(66, 133, 244)",
-                });
-
-                Livewire.on('save-signature', () => {
-
-                    const signatureData = signaturePad.toDataURL();
-                    const signatureDataDriver = signaturePadDriver.toDataURL();
-
-                    Livewire.dispatch('signature-consumer', { signature: signatureData, signatureDriver: signatureDataDriver });
-                    signaturePad.clear();
-                    signaturePadDriver.clear();
-                });
-            });
-        </script>
+            </script>
         @endscript
     @endpushonce
 </div>
