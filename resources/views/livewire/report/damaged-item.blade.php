@@ -139,7 +139,7 @@ function angkaTerbilang($angka) {
     <title>Berita Acara</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Times New Roman", Times, sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -166,7 +166,7 @@ function angkaTerbilang($angka) {
 
         .title {
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             text-transform: uppercase;
             margin-bottom: 20px;
@@ -226,9 +226,9 @@ function angkaTerbilang($angka) {
 <body>
 <div class="container">
     <!-- Header with images -->
-    <table class="header-table" style="width: 100%; border: none;">
+    <table class="header-table" style="width: 100%; border: none;margin-left: -30px; margin-top: -50px;">
         <tr>
-            <td style="text-align: left; width: 50%; padding: 10px;border: none;">
+            <td style="text-align: left; width: 50%; padding: 10px;border: none;margin-left: -20px; ">
                 <img src="data:image/jpeg;base64,{{ $akhlakImage }}" alt="Logo Kiri" style="max-width: 200px; height: auto;" />
             </td>
             <td style="text-align: right; width: 50%; padding: 10px;border: none;">
@@ -238,29 +238,29 @@ function angkaTerbilang($angka) {
     </table>
 
     <!-- Title -->
-    <div class="title">
+    <div class="title" style="margin-top: -40px;">
         BERITA ACARA
     </div>
     <!-- Content -->
-        <p>Pada hari ini Senin Tanggal {{ date('d') }} bulan {{ $bulanIndo[date('F')] }} Tahun {{ terbilang(date('Y')) }} ({{  date('d/m/Y') }}) telah dibongkar {{ $totalContainer }} ({{ angkaTerbilang($totalContainer) }}) cont berupa barang logistik. Terdapat beberapa barang yang rusak berikut data barang:</p>
+        <p style="text-align: justify; font-size: 12px;width: 95%;">Pada hari ini Senin Tanggal {{ date('d') }} bulan {{ $bulanIndo[date('F')] }} Tahun {{ terbilang(date('Y')) }} ({{  date('d/m/Y') }}) telah dibongkar {{ $totalContainer }} ({{ angkaTerbilang($totalContainer) }}) cont berupa barang logistik. Terdapat beberapa barang yang rusak berikut data barang:</p>
 
     <!-- Table -->
-    <table>
+    <table class="content-table" style="width: 95%; border-collapse: collapse;">
         <thead>
         <tr>
-            <th>No</th>
-            <th>{{ __('Container Number') }}</th>
-            <th>{{ __('Item Name') }}</th>
-            <th>{{ __('Quantity') }}</th>
-            <th>{{ __('Information') }}</th>
+            <th style="font-size: 12px">No</th>
+            <th style="font-size: 12px">{{ __('Number Container') }}</th>
+            <th style="font-size: 12px">{{ __('Item Name') }}</th>
+            <th style="font-size: 12px">{{ __('Quantity') }}</th>
+            <th style="font-size: 12px">{{ __('Information') }}</th>
         </tr>
         </thead>
         <tbody>
         @foreach($data as $key => $item)
             <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $item->container->number_container }}</td>
-                <td>
+                <td style="font-size: 12px">{{ $loop->iteration }}</td>
+                <td style="font-size: 12px">{{ $item->container->number_container }}</td>
+                <td style="font-size: 12px">
                     <ul>
                         @foreach($item->shipment_items as $item_detail)
                             @if($item_detail->item_damaged != 0)
@@ -271,7 +271,7 @@ function angkaTerbilang($angka) {
                         @endforeach
                     </ul>
                 </td>
-                <td>
+                <td style="font-size: 12px">
                     <div class="flex-container">
                         <div class="ul-container">
                             <ul>
@@ -292,50 +292,45 @@ function angkaTerbilang($angka) {
                         </div>
                     </div>
                 </td>
-                <td>{{ __('Damaged Items') }}</td>
+                <td style="font-size: 12px">{{ __('Damaged Items') }}</td>
             </tr>
         @endforeach
         </tbody>
     </table>
 
     <!-- Total -->
-    <p><strong>TOTAL: {{ $total }} {{ __('Cardboard') }}</strong> </p>
+    <p style="font-size: 12px;"><strong>TOTAL: {{ $total }} {{ __('Cardboard') }}</strong> </p>
 
     <!-- Paragraph 2 -->
-    <p>Demikian Berita Acara ini kami buat agar dapat diketahui bersama. Atas perhatian dan kerjasamanya kami ucapkan terima kasih.</p>
+    <p style="font-size: 12px;width: 95%;">Demikian Berita Acara ini kami buat agar dapat diketahui bersama. Atas perhatian dan kerjasamanya kami ucapkan terima kasih.</p>
 
-    <!-- Signature using Table -->
-    <table class="signature-table" style="border: none;">
+    <table class="signature-table" style="border: none; width: 100%; border-collapse: collapse;margin-left: -30px;">
         <tr>
-            <td style="width: 33.33%; text-align: center;border: none;">
-                <p>Tally Man</p>
-                <br />
-                <br />
-                <p>RANDEL</p>
+            <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 5px;">
+                <p style="font-size: 12px; margin: 0;">Tally Man</p>
+                <div style="height: 60px;"></div>
+                <p style="font-size: 12px; margin-top: 10px;">RANDEL</p>
             </td>
-            <td style="width: 33.33%; text-align: center;border: none;">
-                <p>Mengetahui</p>
-                <br />
-                <br />
-                <p>GUSRIANTO</p>
+            <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 5px;">
+                <p style="font-size: 12px; margin: 0;">Mengetahui</p>
+                <div style="height: 60px;"></div>
+                <p style="font-size: 12px; margin-top: 10px;">GUSRIANTO</p>
             </td>
-            <td style="width: 33.33%; text-align: center;border: none;">
-                <p>Bag. Operasional</p>
-                <br />
-                <br />
-                <p>MELKI</p>
+            <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 5px;">
+                <p style="font-size: 12px; margin: 0;">Bag. Operasional</p>
+                <div style="height: 60px;"></div>
+                <p style="font-size: 12px; margin-top: 10px;">MELKI</p>
             </td>
         </tr>
     </table>
 
-    <!-- Signature Line -->
-    <table class="signature-table" style="border: none;">
-        <tr >
-            <td style="border: none;">
-                <p>Mengetahui, Kepala Cabang</p>
-                <br />
-                <br />
-                <p>ENDAH WAHYUNINGSIH</p>
+    <table class="signature-table" style="border: none; width: 100%; border-collapse: collapse;margin-left: -30px;">
+        <tr>
+            <td style="width: 100%; text-align: center; border: none; vertical-align: middle; padding: 5px;">
+                <p style="font-size: 12px; margin: 5px 0;">Mengetahui,</p>
+                <p style="font-size: 12px; margin: 5px 0;">Kepala Cabang</p>
+                <div style="height: 60px;"></div>
+                <p style="font-size: 12px; margin-top: 10px;">ENDAH WAHYUNINGSIH</p>
             </td>
         </tr>
     </table>
@@ -351,7 +346,7 @@ function angkaTerbilang($angka) {
         </tr><tr> <!-- Mulai baris baru setiap dua gambar -->
             @endif
             <td style="width: 50%; text-align: center; padding: 10px;">
-                <img src="data:image/jpeg;base64,{{ $base64Image }}" alt="Item Damage Image" style="width: 90%; height: auto; margin-top: 20px;" />
+                <img src="data:image/jpeg;base64,{{ $base64Image }}" alt="Item Damage Image" style="width: 40%; height: auto; margin-top: 20px;" />
             </td>
             @endforeach
         </tr>

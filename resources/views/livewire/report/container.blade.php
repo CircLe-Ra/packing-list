@@ -139,7 +139,7 @@ function angkaTerbilang($angka) {
     <title>Berita Acara</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Times New Roman", Times, serif;
             margin: 0;
             padding: 0;
         }
@@ -229,20 +229,22 @@ function angkaTerbilang($angka) {
         PENGIRIMAN {{ $shipment->loader_ship }} {{ \Carbon\Carbon::parse($shipment->ta_shipment)->format('d F Y') }}
     </div>
     @foreach($datas as $data)
-    <table>
-        <thead style="justify-content: center;">
+    <table style="width: 95%; border-collapse: collapse; margin-bottom: 20px;border:none;">
+        <thead style="justify-content: center; ">
         <tr>
+            <th>No.</th>
             <th>{{ __('Quantity') . ' (' . __('Cardboard') . ')' }}</th>
             <th>
-                {{ __('Number Container') . $loop->iteration }}
+                {{ __('Container ') . $loop->iteration }}
                 <br />
-                {{ $data->container->number_container }}
+                {{ __('Number Container') }} {{ $data->container->number_container }}
             </th>
         </tr>
         </thead>
         <tbody>
         @foreach ($data->shipment_items as $item)
             <tr>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $item->quantity }}</td>
                 <td>{{ $item->item_name }}</td>
             </tr>

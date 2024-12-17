@@ -235,6 +235,10 @@ $getDistributionItems = function ($data) {
                                 <a target="_blank" href="{{ route('submission.travel-document.print', $delivery->id) }}" class="btn btn-sm btn-info text-white">
                                     {{ __('Print Travel Document') }}
                                 </a>
+                                <a target="_blank" href="{{ route('delivery.print', $delivery->id) }}"
+                                   class="btn btn-sm btn-info text-white">
+                                    {{ __('Print Driver Report') }}
+                                </a>
                                 <a href="{{ route('shipment.item-damage.print', $delivery->shipment_id) }}" target="_blank" class="text-white btn btn-error btn-sm     " >{{ __('Print Damaged Items Report') }}</a>
                             </li>
                         </ul>

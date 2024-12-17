@@ -30,7 +30,7 @@ new class extends Component {
                 <ul tabindex="0"
                     class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                     <li>
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
                                 <rect width="24" height="24" fill="none" />
                                 <path fill="currentColor"
@@ -162,7 +162,7 @@ new class extends Component {
         <div class="z-50 hidden navbar-center lg:flex">
             <ul class="px-1 menu menu-horizontal ">
                 <li>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
                             <rect width="24" height="24" fill="none" />
                             <path fill="currentColor"

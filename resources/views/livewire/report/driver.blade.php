@@ -69,42 +69,42 @@
     </style>
 </head>
 <body>
-<div class="header">
-    <!-- Gambar Header -->
-    <img src="{{ public_path('images/header_image_1.jpg') }}" alt="Header Image 1">
-    <img src="{{ public_path('images/header_image_2.jpg') }}" alt="Header Image 2">
-</div>
+<table class="header-table" style="width: 100%; border: none;margin-left: -30px; margin-top: -50px;">
+    <tr>
+        <td style="text-align: left; width: 50%; padding: 10px;border: none;margin-left: -20px; ">
+            <img src="data:image/jpeg;base64,{{ $akhlakImage }}" alt="Logo Kiri" style="max-width: 200px; height: auto;" />
+        </td>
+        <td style="text-align: right; width: 50%; padding: 10px;border: none;">
+            <img src="data:image/png;base64,{{ $pelniImage }}" alt="Logo Kanan" style="max-width: 150px; height: auto;" />
+        </td>
+    </tr>
+</table>
 
 <div class="content">
-    <h2>{{ __('Delivery Report') }}</h2>
-    <p><strong>{{ __('Driver') }}:</strong> {{ $data->driver->name }}</p>
-    <p><strong>{{ __('Vehicle Number') }}:</strong> {{ $data->driver->vehicle_number }}</p>
+    <h2 style="font-size: 20px;margin-top: -50px;text-align: center">{{ __('Delivery Report') }}</h2>
+    <p style="font-size: 14px"><strong>{{ __('Driver') }}:</strong> {{ $data->driver->name }}</p>
+    <p style="font-size: 14px;margin-top: -10px"><strong>{{ __('Vehicle Number') }}:</strong> {{ $data->driver->vehicle_number }}</p>
 
     <div class="table">
         <table>
             <tr>
-                <th>{{ __('KM Image Start') }}</th>
-                <th>{{ __('Vehicle Image Start') }}</th>
+                <th style="font-size: 14px">{{ __('KM Image Start') }}</th>
+                <th style="font-size: 14px">{{ __('Vehicle Image Start') }}</th>
             </tr>
             <tr>
-                <td><img src="{{ public_path('storage/' . $data->delivery_images->first()->km_image_start) }}" alt="Km Image Start"></td>
-                <td><img src="{{ public_path('storage/' . $data->delivery_images->first()->vehicle_image_start) }}" alt="Vehicle Image Start"></td>
+                <td><img style="width: 50%" src="{{ public_path('storage/' . $data->delivery_images->first()->km_image_start) }}" alt="Km Image Start"></td>
+                <td><img style="width: 50%" src="{{ public_path('storage/' . $data->delivery_images->first()->vehicle_image_start) }}" alt="Vehicle Image Start"></td>
             </tr>
             <tr>
-                <th>{{ __('KM Image End') }}</th>
-                <th>{{ __('Vehicle Image End') }}</th>
+                <th style="font-size: 14px">{{ __('KM Image End') }}</th>
+                <th style="font-size: 14px">{{ __('Vehicle Image End') }}</th>
             </tr>
             <tr>
-                <td><img src="{{ public_path('storage/' . $data->delivery_images->first()->km_image_end) }}" alt="Km Image End"></td>
-                <td><img src="{{ public_path('storage/' . $data->delivery_images->first()->vehicle_image_end) }}" alt="Vehicle Image End"></td>
+                <td><img style="width: 50%" src="{{ public_path('storage/' . $data->delivery_images->first()->km_image_end) }}" alt="Km Image End"></td>
+                <td><img style="width: 50%" src="{{ public_path('storage/' . $data->delivery_images->first()->vehicle_image_end) }}" alt="Vehicle Image End"></td>
             </tr>
         </table>
     </div>
-</div>
-
-<div class="footer">
-    <p>Delivery Report</p>
-    <p class="address">Your Company Name, Address, City, Country</p>
 </div>
 </body>
 </html>

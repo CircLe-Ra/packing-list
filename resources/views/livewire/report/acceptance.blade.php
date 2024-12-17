@@ -139,7 +139,7 @@ function angkaTerbilang($angka) {
     <title>Berita Acara</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Times New Roman", Times, serif;
             margin: 0;
             padding: 0;
         }
@@ -166,7 +166,7 @@ function angkaTerbilang($angka) {
 
         .title {
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             text-transform: uppercase;
             margin-bottom: 20px;
@@ -226,9 +226,9 @@ function angkaTerbilang($angka) {
 <body>
 <div class="container">
     <!-- Header with images -->
-    <table class="header-table" style="width: 100%; border: none;">
+    <table class="header-table" style="width: 100%; border: none;margin-left: -30px; margin-top: -50px;">
         <tr>
-            <td style="text-align: left; width: 50%; padding: 10px;border: none;">
+            <td style="text-align: left; width: 50%; padding: 10px;border: none;margin-left: -20px; ">
                 <img src="data:image/jpeg;base64,{{ $akhlakImage }}" alt="Logo Kiri" style="max-width: 200px; height: auto;" />
             </td>
             <td style="text-align: right; width: 50%; padding: 10px;border: none;">
@@ -238,99 +238,103 @@ function angkaTerbilang($angka) {
     </table>
 
     <!-- Title -->
-    <div class="title">
+    <div class="title" style="margin-top: -40px;">
         BERITA ACARA PENERIMAAN BARANG
     </div>
     <!-- Content -->
     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;border:none;">
         <tr>
-            <td style="width: 30%; font-weight: bold;border:none;">Nomor BAPB</td>
-            <td style="border:none;">: {{ $data->bapb_number }}</td>
+            <td style="width: 30%; font-weight: bold;border:none;font-size: 12px">Nomor BAPB</td>
+            <td style="border:none;font-size: 12px">: {{ $data->bapb_number }}</td>
         </tr>
         <tr>
-            <td style="font-weight: bold;border:none;">Penerima</td>
-            <td style="border:none;">: {{ $data->consumer->name }}</td>
+            <td style="font-weight: bold;border:none;font-size: 12px">Penerima</td>
+            <td style="border:none;font-size: 12px">: {{ $data->consumer->name }}</td>
         </tr>
         <tr>
-            <td style="font-weight: bold;border:none;">Alamat</td>
-            <td style="border:none;">: {{ $data->consumer->address }}</td>
+            <td style="font-weight: bold;border:none;font-size: 12px">Alamat</td>
+            <td style="border:none;font-size: 12px">: {{ $data->consumer->address }}</td>
         </tr>
         <tr>
-            <td style="font-weight: bold;border:none;">Kapal Pemuat</td>
-            <td style="border:none;">: {{ $data->shipment->loader_ship }}</td>
+            <td style="font-weight: bold;border:none;font-size: 12px">Kapal Pemuat</td>
+            <td style="border:none;font-size: 12px">: {{ $data->shipment->loader_ship }}</td>
         </tr>
         <tr>
-            <td style="font-weight: bold;border:none;">TA - TD Kapal</td>
-            <td style="border:none;">: {{ $data->shipment->ta_shipment }} - {{ $data->shipment->td_shipment }}</td>
+            <td style="font-weight: bold;border:none;font-size: 12px">TA - TD Kapal</td>
+            <td style="border:none;font-size: 12px">: {{ $data->shipment->ta_shipment }} - {{ $data->shipment->td_shipment }}</td>
         </tr>
         <tr>
-            <td style="font-weight: bold;border:none;">Tanggal Berangkat</td>
-            <td style="border:none;">: {{ $data->departure_date }}</td>
+            <td style="font-weight: bold;border:none;font-size: 12px">Tanggal Berangkat</td>
+            <td style="border:none;font-size: 12px">: {{ $data->departure_date }}</td>
         </tr>
         <tr>
-            <td style="font-weight: bold;border:none;">Tanggal Penyerahan</td>
-            <td style="border:none;">: {{ $data->arrival_date }}</td>
+            <td style="font-weight: bold;border:none;font-size: 12px">Tanggal Penyerahan</td>
+            <td style="border:none;font-size: 12px">: {{ $data->arrival_date }}</td>
         </tr>
     </table>
-    <p>Jenis - Jenis Barang Yang Diserahkan :</p>
+    <p style="font-size: 12px">Jenis - Jenis Barang Yang Diserahkan :</p>
     <!-- Table -->
-    <table>
+    <table style="width: 95%; border-collapse: collapse; margin-bottom: 20px;border:none;">
         <thead>
         <tr>
-            <th>No</th>
-            <th>{{ __('Party') }}</th>
-            <th>{{ __('Item Name') }}</th>
-            <th>{{ __('No. Cont/Seal') }}</th>
+            <th style="font-size: 12px">No</th>
+            <th style="font-size: 12px">{{ __('Party') }}</th>
+            <th style="font-size: 12px">{{ __('Item Name') }}</th>
+            <th style="font-size: 12px">{{ __('No. Cont/Seal') }}</th>
         </tr>
         </thead>
         <tbody>
         @foreach ($quantities as $distribution)
             <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $distribution->quantity }} {{ __('Cardboard') }}</td>
-                <td>{{ $distribution->shipment_item->item_name }}</td>
-                <td>{{ $distribution->shipment_item->shipment_detail->container->number_container }}</td>
+                <td style="font-size: 12px">{{ $loop->iteration }}</td>
+                <td style="font-size: 12px">{{ $distribution->quantity }} {{ __('Cardboard') }}</td>
+                <td style="font-size: 12px">{{ $distribution->shipment_item->item_name }}</td>
+                <td style="font-size: 12px">{{ $distribution->shipment_item->shipment_detail->container->number_container }}</td>
             </tr>
         @endforeach
         </tbody>
     </table>
 
     <!-- Signature using Table -->
-    <table class="signature-table" style="border: none; width: 100%; border-collapse: collapse;">
+    <table class="signature-table" style="border: none; width: 100%; border-collapse: collapse;margin-left: -30px;">
         <tr>
-            <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 10px;">
-                <p>Penerima ditujukan</p>
-                <br />
-                <br />
-                <p>{{ $data->consumer->name }}</p>
+            <td style="width: 25%; text-align: center; border: none; vertical-align: middle; padding: 20px;">
+                <p style="font-size: 12px; margin: 5px 0;">&nbsp;</p>
+                <p style="font-size: 12px; margin: 0;">Penerima ditujukan</p>
+                <p style="font-size: 12px; margin: 5px 0;">&nbsp;</p>
+                <p style="font-size: 12px; margin: 5px 0;">&nbsp;</p>
+                <div style="height: 60px;">
+                    <img width="140" src="{{ $data->signature_consumer }}" />
+                </div>
+                <p style="font-size: 12px; margin-top: 10px;">{{ $data->consumer->name }}</p>
             </td>
-            <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 10px;">
-                <p style="margin-top: -3px; margin-bottom: -3px;">Disaksikan :</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">Balai Pengelola</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">Transport Darat</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">Kelas II Papua</p>
-                <br />
-                <br />
-                <p>ARISCA AULIA, A.Md</p>
+            <td style="width: 25%; text-align: center; border: none; vertical-align: middle; padding: 5px;">
+                <p style="font-size: 12px; margin: 5px 0;">&nbsp;</p>
+                <p style="font-size: 12px; margin: 0;">Disaksikan :</p>
+                <p style="font-size: 12px; margin: 5px 0;">Balai Pengelola Transport Darat</p>
+                <p style="font-size: 12px; margin: 5px 0;">Kelas II Papua</p>
+                <div style="height: 60px;"></div>
+                <p style="font-size: 12px; margin-top: 10px;">ARISCA AULIA, A.Md</p>
             </td>
-            <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 10px;">
-                <p style="margin-top: -3px; margin-bottom: -3px;">Disaksikan :</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">Perum Damri</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">Cabang Merauke</p>
-                <br />
-                <br />
-                <p>ARIEF HERMANTO, SE.,MM</p>
+            <td style="width: 25%; text-align: center; border: none; vertical-align: middle; padding: 5px;">
+                <p style="font-size: 12px; margin: 5px 0;">&nbsp;</p>
+                <p style="font-size: 12px; margin: 0;">Disaksikan :</p>
+                <p style="font-size: 12px; margin: 5px 0;">Perum Damri Cabang Merauke</p>
+                <p style="font-size: 12px; margin: 5px 0;">&nbsp;</p>
+                <div style="height: 60px;"></div>
+                <p style="font-size: 12px; margin-top: 10px;">ARIEF HERMANTO, SE.,MM</p>
             </td>
-            <td style="width: 33.33%; text-align: center; border: none; vertical-align: middle; padding: 10px;">
-                <p style="margin-top: -3px; margin-bottom: -3px;">Merauke, {{ $data->departure_date }}</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">Pengirim</p>
-                <p style="margin-top: -3px; margin-bottom: -3px;">PT. Sarana Bandar Logistik</p>
-                <br />
-                <br />
-                <p>ENDAH WAHYUNINGSIH</p>
+            <td style="width: 25%; text-align: center; border: none; vertical-align: middle; padding: 5px;">
+                <p style="font-size: 12px; margin: 4.5px;">Merauke, {{ $data->departure_date }}</p>
+                <p style="font-size: 12px; margin: 5px 0;">Pengirim</p>
+                <p style="font-size: 12px; margin: 5px 0;">PT. Sarana Bandar Logistik</p>
+                <p style="font-size: 12px; margin: 5px 0;">&nbsp;</p>
+                <div style="height: 60px;"></div>
+                <p style="font-size: 12px; margin-top: 10px;">ENDAH WAHYUNINGSIH</p>
             </td>
         </tr>
     </table>
+
 
     <!-- Footer -->
 </div>

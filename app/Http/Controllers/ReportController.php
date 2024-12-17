@@ -16,7 +16,15 @@ class ReportController extends Controller
     public function delivery($id)
     {
         $data = Delivery::with('driver', 'delivery_images')->find($id);
-        $pdf = Pdf::loadView('livewire.report.driver', ['data' => $data]);
+        $akhlakImage = base64_encode(File::get(public_path('img/akhlak.jpg')));
+        $pelniImage = base64_encode(File::get(public_path('img/pelni.png')));
+        $footerImage = base64_encode(File::get(public_path('img/footer.png')));
+        $pdf = Pdf::loadView('livewire.report.driver', [
+            'data' => $data,
+            'akhlakImage' => $akhlakImage,
+            'pelniImage' => $pelniImage,
+            'footerImage' => $footerImage
+        ]);
         return $pdf->stream('delivery_report.pdf');
     }
 
@@ -61,7 +69,7 @@ class ReportController extends Controller
         ]);
 
         // Mengunduh PDF
-        return $pdf->download('item_damaged_report.pdf');
+        return $pdf->stream('item_damaged_report.pdf');
     }
 
     public function acceptance($id){

@@ -228,7 +228,7 @@ $getDistributionItems = function ($data) {
                                     </p>
                                 </div>
                             </li>
-                            <li class="pt-3 sm:pt-4 flex flex-row items-center justify-end gap-2">
+                            <li class="pt-3 sm:pt-4 flex flex-col items-center justify-end gap-2">
                                     <a target="_blank" href="{{ route('submission.acceptance.print', $delivery->id) }}" class="btn btn-sm btn-info text-white">
                                         {{ __('Print Goods Receipt Minutes') }}
                                     </a>

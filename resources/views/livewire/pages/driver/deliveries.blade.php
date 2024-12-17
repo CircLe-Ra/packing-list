@@ -38,7 +38,21 @@ on([
         $this->idData = $data;
     },
     'set-data' => fn($data) => ($this->delivery_id = $data),
-]);
+    'signature-consumer' => function ($signature, $signatureDriver) {
+        try {
+            Delivery::where('id', $this->delivery_id)->update(['signature_consumer' => $signature, 'signature_driver' => $signatureDriver]);
+            $this->reset(['delivery_id']);
+            $this->dispatch('refresh');
+            $this->dispatch('close-modal', 'signature');
+            Toaster::success('Signature has been saved');
+        } catch (\Exception $e) {
+            $this->reset(['signature', 'delivery_id']);
+            $this->dispatch('refresh');
+            $this->dispatch('close-modal', 'signature');
+            Toaster::error('Signature could not be saved');
+        }
+    }
+    ]);
 
 $getDistributionItems = function ($data) {
     $distributions = Distribution::where('driver_id', $data)->get();
@@ -94,7 +108,6 @@ $saveImageEnd = function () {
         $this->dispatch('close-modal', 'modal_upload_km_end');
         Toaster::success('Images have been saved');
     } catch (\Exception $e) {
-        dd($e);
         $this->reset(['km_image_end', 'vehicle_image_end', 'delivery_id']);
         $this->dispatch('refresh');
         $this->dispatch('close-modal', 'modal_upload_km_end');
@@ -107,6 +120,7 @@ $print = function ($id) {
     $pdf = Pdf::loadView('livewire.report.driver', ['data' => $data]);
     return $pdf->download('delivery_report.pdf');
 };
+
 
 ?>
 <div>
@@ -213,6 +227,22 @@ $print = function ($id) {
             </div>
             <div class="flex justify-end mt-5">
                 <button class="text-white btn btn-info" wire:click="saveImageEnd">{{ __('Save') }}</button>
+            </div>
+        </div>
+    </x-form.modal>
+
+    <x-form.modal id="signature" class="-mt-2 w-9/12 max-w-xl" :title="__('Signature')">
+        <div>
+            <div wire:ignore>
+                <x-input-label for="signature-pad" :value="__('Signature Consumer')" class="mb-4" />
+                <canvas id="signature-pad" class="signature-pad bg-white w-full" width="500" height="200"></canvas>
+            </div>
+            <div wire:ignore>
+                <x-input-label for="signature-pad" :value="__('Signature Driver')" class="my-4" />
+                <canvas id="signature-pad-driver" class="signature-pad bg-white w-full" width="500" height="200"></canvas>
+            </div>
+            <div class="flex justify-end mt-5">
+                <button class="text-white btn btn-info" wire:click="$dispatch('save-signature')">{{ __('Save') }}</button>
             </div>
         </div>
     </x-form.modal>
@@ -355,11 +385,15 @@ $print = function ($id) {
                                     </p>
                                 </div>
                             </li>
-                            <li class="pt-3 sm:pt-4 flex flex-row items-center justify-end gap-2">
+                            <li class="pt-3 sm:pt-4 flex flex-col items-center justify-end gap-2">
                                 @if ($delivery->status == 'verified')
                                     <label for="modal_upload_km" class="btn btn-sm btn-success text-white"
                                         @click="$dispatch('set-data', { data: '{{ $delivery->id }}' })">{{ __('Upload KM and Vehicle Start') }}</label>
                                 @elseif($delivery->status == 'delivered')
+                                    @if($delivery->signature_consumer == null || $delivery->signature_driver == null)
+                                    <label for="signature" class="btn btn-sm btn-info text-white"
+                                           @click="$dispatch('set-data', { data: '{{ $delivery->id }}' })">{{ __('Signature Consumer') }}</label>
+                                    @endif
                                     <label for="modal_upload_km_end" class="btn btn-sm btn-info text-white"
                                         @click="$dispatch('set-data', { data: '{{ $delivery->id }}' })">{{ __('Upload KM and Vehicle End') }}</label>
                                 @elseif($delivery->status == 'success')
@@ -379,5 +413,43 @@ $print = function ($id) {
             </div>
         @endif
     </div>
+    @pushonce('scripts')
+        @script
+        <script>
+            window.addEventListener('livewire:navigated', function() {
+                const signature = document.querySelector('#signature-pad');
+                const signatureDriver = document.querySelector('#signature-pad-driver');
+
+                // Pastikan plugin tersedia di window
+                if (!window.SignaturePad) {
+                    console.error('Plugin SignaturePad tidak tersedia.');
+                    return;
+                }
+
+                const signaturePad = new window.SignaturePad(signature, {
+                    minWidth: 5,
+                    maxWidth: 10,
+                    penColor: "rgb(66, 133, 244)",
+                });
+
+                const signaturePadDriver = new window.SignaturePad(signatureDriver, {
+                    minWidth: 5,
+                    maxWidth: 10,
+                    penColor: "rgb(66, 133, 244)",
+                });
+
+                Livewire.on('save-signature', () => {
+
+                    const signatureData = signaturePad.toDataURL();
+                    const signatureDataDriver = signaturePadDriver.toDataURL();
+
+                    Livewire.dispatch('signature-consumer', { signature: signatureData, signatureDriver: signatureDataDriver });
+                    signaturePad.clear();
+                    signaturePadDriver.clear();
+                });
+            });
+        </script>
+        @endscript
+    @endpushonce
 </div>
 

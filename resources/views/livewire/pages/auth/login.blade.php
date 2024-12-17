@@ -20,7 +20,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         Session::regenerate();
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: false);
+        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 }; ?>
 
@@ -42,7 +42,7 @@ new #[Layout('layouts.guest')] class extends Component
                 <!-- Input field -->
                 <input
                     :type="show ? 'text' : 'password'"
-                    class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                    class="input input-bordered w-full"
                     id="password"
                     name="password"
                     wire:model="form.password"
@@ -54,7 +54,7 @@ new #[Layout('layouts.guest')] class extends Component
                 <button
                     type="button"
                     @click="show = !show"
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 "
                 >
                     <span x-text="show ? 'Hide' : 'Show'" class="text-gray-500 cursor-pointer"></span>
                 </button>

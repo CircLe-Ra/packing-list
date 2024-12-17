@@ -23,6 +23,7 @@
         "@fullcalendar/daygrid": "^6.1.15",
         "@fullcalendar/list": "^6.1.15",
         "@fullcalendar/multimonth": "^6.1.15",
-        "@fullcalendar/timegrid": "^6.1.15"
+        "@fullcalendar/timegrid": "^6.1.15",
+        "signature_pad": "^5.0.4"
     }
 }

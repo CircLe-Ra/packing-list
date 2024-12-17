@@ -5,7 +5,9 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import multiMonthPlugin from '@fullcalendar/multimonth';
 import allLocales from '@fullcalendar/core/locales-all';
+import SignaturePad from "signature_pad";
 
+window.SignaturePad = SignaturePad;
 window.Calendar = Calendar;
 window.dayGridPlugin = dayGridPlugin;
 window.timeGridPlugin = timeGridPlugin;
