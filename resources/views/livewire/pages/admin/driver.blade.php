@@ -14,18 +14,20 @@ state(['idData']);
 state(['showing' => 5])->url();
 state(['search' => null])->url();
 
-$drivers = computed(function(){
+$drivers = computed(function () {
     return Driver::where('name', 'like', '%' . $this->search . '%')
         ->orWhere('phone', 'like', '%' . $this->search . '%')
         ->orWhere('vehicle_number', 'like', '%' . $this->search . '%')
-        ->latest()->paginate($this->showing, pageName: 'driver-page');
+        ->latest()
+        ->paginate($this->showing, pageName: 'driver-page');
 });
 
-
-on(['refresh' => fn() => $this->drivers = Driver::where('name', 'like', '%' . $this->search . '%')
-    ->orWhere('phone', 'like', '%' . $this->search . '%')
-    ->orWhere('vehicle_number', 'like', '%' . $this->search . '%')
-    ->latest()->paginate($this->showing, pageName: 'driver-page')
+on([
+    'refresh' => fn() => ($this->drivers = Driver::where('name', 'like', '%' . $this->search . '%')
+        ->orWhere('phone', 'like', '%' . $this->search . '%')
+        ->orWhere('vehicle_number', 'like', '%' . $this->search . '%')
+        ->latest()
+        ->paginate($this->showing, pageName: 'driver-page')),
 ]);
 
 $getUniqueNumber = function () {
@@ -34,7 +36,7 @@ $getUniqueNumber = function () {
     return $nextNumber;
 };
 
-$store = function() {
+$store = function () {
     $this->validate([
         'name' => 'required',
         'phone' => 'required',
@@ -44,7 +46,7 @@ $store = function() {
     try {
         if ($this->idData) {
             \App\Models\User::where('id', Driver::find($this->idData)->user_id)->update([
-                'name' => $this->name
+                'name' => $this->name,
             ]);
             Driver::find($this->idData)->update([
                 'name' => $this->name,
@@ -56,7 +58,7 @@ $store = function() {
             $this->dispatch('refresh');
             $this->dispatch('toast', message: __('Driver has been updated'), data: ['position' => 'top-center', 'type' => 'success']);
             Toaster::success(__('Driver has been updated'));
-        }else {
+        } else {
             $user = \App\Models\User::create([
                 'name' => $this->name,
                 'email' => 'driver' . $this->getUniqueNumber() . '@driver.com',
@@ -77,10 +79,9 @@ $store = function() {
         $this->dispatch('toast', message: __('Driver could not be created'), data: ['position' => 'top-center', 'type' => 'error']);
         Toaster::error(__('Driver could not be created'));
     }
-
 };
 
-$edit = function($id) {
+$edit = function ($id) {
     $driver = Driver::find($id);
     $this->idData = $id;
     $this->name = $driver->name;
@@ -88,7 +89,7 @@ $edit = function($id) {
     $this->vehicle_number = $driver->vehicle_number;
 };
 
-$destroy = function($id) {
+$destroy = function ($id) {
     try {
         $driver = Driver::find($id);
         $driver->delete();
@@ -100,22 +101,19 @@ $destroy = function($id) {
     }
 };
 
-
-
 ?>
 
 <div>
     <x-breadcrumb :crumbs="[
-                [
-                    'text' => __('Dashboard'),
-                    'href' => '/dashboard',
-                ],
-                [
-                    'text' => __('Driver'),
-                    'href' => route('master-data.driver'),
-                ]
-            ]"
-    />
+        [
+            'text' => __('Dashboard'),
+            'href' => '/dashboard',
+        ],
+        [
+            'text' => __('Driver'),
+            'href' => route('master-data.driver'),
+        ],
+    ]" />
     <div class="flex gap-4 justify-between">
         <div class="w-2/5">
             <x-card class="bg-base-200">
@@ -123,8 +121,10 @@ $destroy = function($id) {
                 <form wire:submit="store" class="px-10">
                     <input type="hidden" wire:model="idData">
                     <x-text-input-2 name="name" wire:model="name" labelClass="my-3" :placeholder="__('Name')" />
-                    <x-text-input-2 type="text" name="phone" max="16" wire:model="phone" labelClass="my-3" :placeholder="__('Phone Number')" />
-                    <x-text-input-2 name="vehicle_number" wire:model="vehicle_number" labelClass="my-3" :placeholder="__('Vehicle Number')" />
+                    <x-text-input-2 type="text" name="phone" max="16" wire:model="phone" labelClass="my-3"
+                        :placeholder="__('Phone Number')" />
+                    <x-text-input-2 name="vehicle_number" wire:model="vehicle_number" labelClass="my-3"
+                        :placeholder="__('Vehicle Number')" />
                     <div class="justify-end card-actions">
                         <x-button-neutural type="reset">{{ __('Cancel') }}</x-button-neutural>
                         <x-button-active>{{ __('Save') }}</x-button-active>
@@ -132,25 +132,28 @@ $destroy = function($id) {
                 </form>
             </x-card>
         </div>
-    <x-card class="w-3/5 bg-base-200">
+        <x-card class="w-3/5 bg-base-200">
             <h2 class="card-title">{{ __('Driver Data') }}</h2>
-            <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
+            <div
+                class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
                 <x-form.filter class="w-24 text-xs select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
                 <x-form.search wire:model.live="search" class="w-32" />
             </div>
-            <x-divider name="Tabel Data" class="-mt-5"/>
+            <x-divider name="Tabel Data" class="-mt-5" />
             <x-table class="text-center " thead="No.,Name,Phone Number,Vehicle Number,Created At" :action="true">
                 @if ($this->drivers && $this->drivers->isNotEmpty())
                     @foreach ($this->drivers as $driver)
-                        <tr >
+                        <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $driver->name }}</td>
                             <td>{{ $driver->phone }}</td>
                             <td>{{ $driver->vehicle_number }}</td>
-                            <td>{{ $driver->created_at->diffForHumans() }}</td>
+                            <td>{{ $driver->created_at }}</td>
                             <td class="space-y-1 space-x-1">
-                                <x-button-info class="text-white btn-xs" wire:click="edit({{ $driver->id }})">Edit</x-button-info>
-                                <x-button-error class="text-white btn-xs" wire:click="destroy({{ $driver->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?')}}">
+                                <x-button-info class="text-white btn-xs"
+                                    wire:click="edit({{ $driver->id }})">Edit</x-button-info>
+                                <x-button-error class="text-white btn-xs" wire:click="destroy({{ $driver->id }})"
+                                    wire:confirm="{{ __('Are you sure you want to delete this data?') }}">
                                     {{ __('Delete') }}
                                 </x-button-error>
                             </td>
@@ -166,3 +169,4 @@ $destroy = function($id) {
         </x-card>
     </div>
 </div>
+

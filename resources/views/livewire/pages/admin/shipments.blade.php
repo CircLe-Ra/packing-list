@@ -2,6 +2,9 @@
 
 use function Livewire\Volt\{state, layout, title, computed, on, usesPagination, mount};
 use App\Models\Shipment;
+use App\Models\User;
+use App\Notifications\Distribution;
+use Illuminate\Support\Facades\Notification;
 use Masmerise\Toaster\Toaster;
 
 layout('layouts.app');
@@ -16,17 +19,18 @@ $shipments = computed(function () {
     return Shipment::where('loader_ship', 'like', '%' . $this->search . '%')
         ->orWhere('ta_shipment', 'like', '%' . $this->search . '%')
         ->orWhere('td_shipment', 'like', '%' . $this->search . '%')
-        ->latest()->paginate($this->showing, pageName: 'shipment-page');
+        ->latest()
+        ->paginate($this->showing, pageName: 'shipment-page');
 });
 
-on(['refresh' => fn() => $this->shipments = Shipment::where('loader_ship', 'like', '%' . $this->search . '%')
-    ->orWhere('ta_shipment', 'like', '%' . $this->search . '%')
-    ->orWhere('td_shipment', 'like', '%' . $this->search . '%')
-    ->latest()->paginate($this->showing, pageName: 'shipment-page'),
+on([
+    'refresh' => fn() => ($this->shipments = Shipment::where('loader_ship', 'like', '%' . $this->search . '%')
+        ->orWhere('ta_shipment', 'like', '%' . $this->search . '%')
+        ->orWhere('td_shipment', 'like', '%' . $this->search . '%')
+        ->latest()
+        ->paginate($this->showing, pageName: 'shipment-page')),
     'close-modal-x' => fn() => $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData'),
 ]);
-
-
 
 $save = function () {
     $this->validate([
@@ -38,6 +42,7 @@ $save = function () {
     ]);
 
     try {
+        $users = User::role(['fieldagen', 'driver'])->get();
         if ($this->idData) {
             $shipment = Shipment::find($this->idData);
             $shipment->loader_ship = $this->loader_ship;
@@ -46,6 +51,7 @@ $save = function () {
             $shipment->unloading_date = $this->unloading_date;
             $shipment->description = $this->desc;
             $shipment->save();
+            Notification::send($users, new Distribution($shipment));
             $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData', 'desc', 'unloading_date');
             $this->dispatch('close-modal');
             $this->dispatch('refresh');
@@ -59,6 +65,7 @@ $save = function () {
             $shipment->unloading_date = $this->unloading_date;
             $shipment->description = $this->desc;
             $shipment->save();
+            Notification::send($users, new Distribution($shipment));
             unset($this->shipments);
             $this->reset('loader_ship', 'ta_shipment', 'td_shipment', 'idData', 'desc', 'unloading_date');
             $this->dispatch('close-modal');
@@ -70,7 +77,6 @@ $save = function () {
         $this->dispatch('close-modal');
         Toaster::error(__('Shipment could not be saved'));
     }
-
 };
 
 $destroy = function ($id) {
@@ -81,7 +87,7 @@ $destroy = function ($id) {
         $this->dispatch('refresh');
         Toaster::success(__('Shipment has been deleted'));
     } catch (Throwable $th) {
-//        Toaster::error($th->getMessage());
+        //        Toaster::error($th->getMessage());
         Toaster::error(__('Shipment could not be deleted'));
     }
 };
@@ -96,24 +102,22 @@ $edit = function ($id) {
     $this->desc = $shipment->description;
 
     $this->dispatch('open-modal', 'modal_shipment');
-}
+};
 
 ?>
 
 <div>
     <div class="flex justify-between">
         <x-breadcrumb :crumbs="[
-                    [
-                        'text' => __('Dashboard'),
-                        'href' => '/dashboard',
-                    ],
-                    [
-                        'text' => __('Shipment'),
-                        'href' => route('shipments'),
-                    ]
-                ]"
-                      class="items-start"
-        />
+            [
+                'text' => __('Dashboard'),
+                'href' => '/dashboard',
+            ],
+            [
+                'text' => __('Shipment'),
+                'href' => route('shipments'),
+            ],
+        ]" class="items-start" />
 
         <label for="modal_shipment" class="btn btn-sm btn-base-200 my-4">Tambah</label>
     </div>
@@ -121,9 +125,12 @@ $edit = function ($id) {
     <x-form.modal id="modal_shipment" class="-mt-2" :title="__('Shipments')">
         <form wire:submit="save">
             <x-text-input-4 name="loader_ship" wire:model="loader_ship" labelClass="my-3" :title="__('Loader Ship')" />
-            <x-text-input-4 type="date" name="ta_shipment" wire:model="ta_shipment" labelClass="my-3" :title="__('TA Ship')" />
-            <x-text-input-4 type="date" name="td_shipment" wire:model="td_shipment" labelClass="my-3" :title="__('TD Ship')" />
-            <x-text-input-4 type="date" name="unloading_date" wire:model="unloading_date" labelClass="my-3" :title="__('Unloading Date')" />
+            <x-text-input-4 type="date" name="ta_shipment" wire:model="ta_shipment" labelClass="my-3"
+                :title="__('TA Ship')" />
+            <x-text-input-4 type="date" name="td_shipment" wire:model="td_shipment" labelClass="my-3"
+                :title="__('TD Ship')" />
+            <x-text-input-4 type="date" name="unloading_date" wire:model="unloading_date" labelClass="my-3"
+                :title="__('Unloading Date')" />
             <x-text-input-4 type="text" name="desc" wire:model="desc" labelClass="my-3" :title="__('Description')" />
 
             <div class="flex justify-end">
@@ -131,7 +138,6 @@ $edit = function ($id) {
             </div>
         </form>
     </x-form.modal>
-
 
     <div>
         <h2 class="card-title">{{ __('Shipment Data') }}</h2>
@@ -148,14 +154,15 @@ $edit = function ($id) {
                         <td>{{ $shipment->loader_ship }}</td>
                         <td>{{ $shipment->ta_shipment }}</td>
                         <td>{{ $shipment->td_shipment }}</td>
-                        <td>{{ $shipment->created_at->diffForHumans() }}</td>
+                        <td>{{ $shipment->created_at }}</td>
                         <td class="space-y-1 space-x-1">
-                            <x-button-link href="{{ route('shipments.data-container', $shipment->id) }}" class="text-white btn-xs btn-success" wire:navigate>{{ __('Data Containers') }}</x-button-link>
-                            <x-button-info class="text-white btn-xs" wire:click="edit({{ $shipment->id }})">Edit</x-button-info>
-                            <x-button-error class="{!! $shipment->shipment_details->count() > 0 ? 'btn-disabled text-white btn-xs' : 'text-white btn-xs' !!}"
-                                            wire:click="destroy({{ $shipment->id }})"
-                                            wire:confirm="{{ __('Are you sure you want to delete this data?')}}"
-                            >{{ __('Delete') }}</x-button-error>
+                            <x-button-link href="{{ route('shipments.data-container', $shipment->id) }}"
+                                class="text-white btn-xs btn-success"
+                                wire:navigate>{{ __('Data Containers') }}</x-button-link>
+                            <x-button-info class="text-white btn-xs"
+                                wire:click="edit({{ $shipment->id }})">Edit</x-button-info>
+                            <x-button-error class="{!! $shipment->shipment_details->count() > 0 ? 'btn-disabled text-white btn-xs' : 'text-white btn-xs' !!}" wire:click="destroy({{ $shipment->id }})"
+                                wire:confirm="{{ __('Are you sure you want to delete this data?') }}">{{ __('Delete') }}</x-button-error>
                         </td>
                     </tr>
                 @endforeach
@@ -169,3 +176,4 @@ $edit = function ($id) {
     </div>
 
 </div>
+

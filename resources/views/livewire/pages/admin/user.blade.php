@@ -15,9 +15,11 @@ state(['showing' => 5])->url();
 state(['search' => null])->url();
 
 $users = computed(function () {
-    return User::with('roles')->where('name', 'like', '%' . $this->search . '%')
+    return User::with('roles')
+        ->where('name', 'like', '%' . $this->search . '%')
         ->orWhere('email', 'like', '%' . $this->search . '%')
-        ->latest()->paginate($this->showing, pageName: 'user-page');
+        ->latest()
+        ->paginate($this->showing, pageName: 'user-page');
 });
 
 $store = function () {
@@ -64,7 +66,7 @@ $edit = function ($id) {
     $this->idData = $id;
     $this->name = $user->name;
     $this->email = $user->email;
-    $this->role_name = $user->roles->first()->name  ?? null;
+    $this->role_name = $user->roles->first()->name ?? null;
 };
 
 $destroy = function ($id) {
@@ -83,10 +85,9 @@ $destroy = function ($id) {
 
 <div>
     <x-breadcrumb :crumbs="[
-                ['text' => __('Dashboard'), 'href' => '/dashboard'],
-                ['text' => __('Users'), 'href' => route('master-data.user')]
-            ]"
-    />
+        ['text' => __('Dashboard'), 'href' => '/dashboard'],
+        ['text' => __('Users'), 'href' => route('master-data.user')],
+    ]" />
     <div class="flex gap-4 justify-between">
         <div class="w-2/5">
             <x-card class="bg-base-200">
@@ -94,8 +95,10 @@ $destroy = function ($id) {
                 <form wire:submit="store" class="px-10">
                     <input type="hidden" wire:model="idData">
                     <x-text-input-2 name="name" wire:model="name" labelClass="my-3" :placeholder="__('Name')" />
-                    <x-text-input-2 type="email" name="email" wire:model="email" labelClass="my-3" :placeholder="__('Email')" />
-                    <x-text-input-2 type="password" name="password" wire:model="password" labelClass="my-3" :placeholder="__('Password')" />
+                    <x-text-input-2 type="email" name="email" wire:model="email" labelClass="my-3"
+                        :placeholder="__('Email')" />
+                    <x-text-input-2 type="password" name="password" wire:model="password" labelClass="my-3"
+                        :placeholder="__('Password')" />
 
                     <!-- Dropdown untuk memilih role -->
                     <div class="mt-3">
@@ -117,11 +120,12 @@ $destroy = function ($id) {
 
         <x-card class="w-3/5 bg-base-200">
             <h2 class="card-title">{{ __('User Data') }}</h2>
-            <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
+            <div
+                class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
                 <x-form.filter class="w-24 text-xs select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
                 <x-form.search wire:model.live="search" class="w-32" />
             </div>
-            <x-divider name="Tabel Data" class="-mt-5"/>
+            <x-divider name="Tabel Data" class="-mt-5" />
             <x-table class="text-center" thead="No.,Name,Email,Role,Created At" :action="true">
                 @if ($this->users && $this->users->isNotEmpty())
                     @foreach ($this->users as $user)
@@ -130,10 +134,12 @@ $destroy = function ($id) {
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->roles->first()->name ?? __('No Role') }}</td>
-                            <td>{{ $user->created_at->diffForHumans() }}</td>
+                            <td>{{ $user->created_at }}</td>
                             <td class="space-y-1 space-x-1">
-                                <x-button-info class="text-white btn-xs" wire:click="edit({{ $user->id }})">Edit</x-button-info>
-                                <x-button-error class="text-white btn-xs" wire:click="destroy({{ $user->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?') }}">
+                                <x-button-info class="text-white btn-xs"
+                                    wire:click="edit({{ $user->id }})">Edit</x-button-info>
+                                <x-button-error class="text-white btn-xs" wire:click="destroy({{ $user->id }})"
+                                    wire:confirm="{{ __('Are you sure you want to delete this data?') }}">
                                     {{ __('Delete') }}
                                 </x-button-error>
                             </td>
@@ -149,3 +155,4 @@ $destroy = function ($id) {
         </x-card>
     </div>
 </div>
+

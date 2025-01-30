@@ -111,7 +111,7 @@ $destroy = function($id) {
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $itemType->name }}</td>
-                            <td>{{ $itemType->created_at->diffForHumans() }}</td>
+                            <td>{{ $itemType->created_at }}</td>
                             <td>
                                 <x-button-info class="text-white btn-xs" wire:click="edit({{ $itemType->id }})">Edit</x-button-info>
                                 <x-button-error class="text-white btn-xs" wire:click="destroy({{ $itemType->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?')}}">

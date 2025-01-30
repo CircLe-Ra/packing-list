@@ -74,6 +74,7 @@ class ReportController extends Controller
 
     public function acceptance($id){
         $data = Delivery::with('driver', 'consumer')->find($id);
+        // dd($data->signature_consumer);
         $shipment_id = $data->shipment_id;
         $quantities = Distribution::whereHas('shipment_item', function($query) use ($shipment_id) {
                 $query->whereHas('shipment_detail', function($query) use ($shipment_id) {

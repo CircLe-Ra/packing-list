@@ -40,7 +40,10 @@ on([
     'set-data' => fn($data) => ($this->delivery_id = $data),
     'signature-consumer' => function ($signature, $signatureDriver) {
         try {
-            Delivery::where('id', $this->delivery_id)->update(['signature_consumer' => $signature, 'signature_driver' => $signatureDriver]);
+            Delivery::where('id', $this->delivery_id)->update([
+                'signature_consumer' => $signature,
+                'signature_driver' => $signatureDriver,
+            ]);
             $this->reset(['delivery_id']);
             $this->dispatch('refresh');
             $this->dispatch('close-modal', 'signature');

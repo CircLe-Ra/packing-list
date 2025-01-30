@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
     //leader
     Route::middleware(['role:leader'])->group(function () {
         Volt::route('/report', 'pages.leader.report')->name('report');
-        Volt::route('/report/consumer', 'pages.leader.report-consumer')->name('report.consumer');
+        Volt::route('/report/consumer/{id}', 'pages.leader.report-consumer')->name('report.consumer');
     });
 
     //admin

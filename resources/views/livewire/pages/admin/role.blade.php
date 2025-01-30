@@ -14,7 +14,8 @@ state(['search' => null])->url();
 
 $roles = computed(function () {
     return Role::where('name', 'like', '%' . $this->search . '%')
-        ->latest()->paginate($this->showing, pageName: 'role-page');
+        ->latest()
+        ->paginate($this->showing, pageName: 'role-page');
 });
 
 $store = function () {
@@ -64,10 +65,9 @@ $destroy = function ($id) {
 
 <div>
     <x-breadcrumb :crumbs="[
-                ['text' => __('Dashboard'), 'href' => '/dashboard'],
-                ['text' => __('Roles'), 'href' => route('master-data.role')]
-            ]"
-    />
+        ['text' => __('Dashboard'), 'href' => '/dashboard'],
+        ['text' => __('Roles'), 'href' => route('master-data.role')],
+    ]" />
     <div class="flex gap-4 justify-between">
         <div class="w-2/5">
             <x-card class="bg-base-200">
@@ -85,21 +85,24 @@ $destroy = function ($id) {
 
         <x-card class="w-3/5 bg-base-200">
             <h2 class="card-title">{{ __('Role Data') }}</h2>
-            <div class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
+            <div
+                class="flex flex-wrap items-center justify-between py-4 space-y-4 flex-column sm:flex-row sm:space-y-0">
                 <x-form.filter class="w-24 text-xs select-sm" wire:model.live="showing" :select="['5', '10', '20', '50', '100']" />
                 <x-form.search wire:model.live="search" class="w-32" />
             </div>
-            <x-divider name="Tabel Data" class="-mt-5"/>
+            <x-divider name="Tabel Data" class="-mt-5" />
             <x-table class="text-center" thead="No.,Role Name,Created At" :action="true">
                 @if ($this->roles && $this->roles->isNotEmpty())
                     @foreach ($this->roles as $role)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $role->name }}</td>
-                            <td>{{ $role->created_at->diffForHumans() }}</td>
+                            <td>{{ $role->created_at }}</td>
                             <td class="space-y-1 space-x-1">
-                                <x-button-info class="text-white btn-xs" wire:click="edit({{ $role->id }})">Edit</x-button-info>
-                                <x-button-error class="text-white btn-xs" wire:click="destroy({{ $role->id }})" wire:confirm="{{ __('Are you sure you want to delete this data?') }}">
+                                <x-button-info class="text-white btn-xs"
+                                    wire:click="edit({{ $role->id }})">Edit</x-button-info>
+                                <x-button-error class="text-white btn-xs" wire:click="destroy({{ $role->id }})"
+                                    wire:confirm="{{ __('Are you sure you want to delete this data?') }}">
                                     {{ __('Delete') }}
                                 </x-button-error>
                             </td>
@@ -115,3 +118,4 @@ $destroy = function ($id) {
         </x-card>
     </div>
 </div>
+
